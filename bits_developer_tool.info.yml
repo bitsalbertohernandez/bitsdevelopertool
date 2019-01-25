@@ -1,0 +1,5 @@
+name: 'bits_developer_tool'
+type: module
+description: 'Developer tool'
+core: 8.x
+package: 'Custom'

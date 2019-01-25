@@ -1,0 +1,38 @@
+<?php
+
+/**
+ * @file
+ * Contains bits_developer_tool.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function bits_developer_tool_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the bits_developer_tool module.
+    case 'help.page.bits_developer_tool':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Generation tool') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function bits_developer_tool_theme() {
+  return [
+    'bits_generate_tool' => [
+      'variables' => [
+        'form' => NULL,
+      ],
+      'template' => 'bits-generate-tool',
+    ],
+  ];
+}

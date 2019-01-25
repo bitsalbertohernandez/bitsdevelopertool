@@ -1,0 +1,12 @@
+services:
+  file.builder:
+    class: Nette\PhpGenerator\PhpFile
+    argument: []
+
+  controller.builder:
+    class: Drupal\bits_developer_tool\Services\ControllerBuilder
+    argument: ["@file.builder"]
+
+  file.manager:
+    class: Drupal\bits_developer_tool\Services\FileManager
+    argument: []
