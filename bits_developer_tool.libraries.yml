@@ -1,0 +1,9 @@
+generate_code:
+  version: 1.x
+  css:
+    theme:
+      css/generate_code.css: {}
+  js:
+    js/generate_code.js: {}
+  dependencies:
+        - core/jquery
