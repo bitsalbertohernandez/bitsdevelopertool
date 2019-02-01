@@ -22,7 +22,6 @@ function bits_developer_tool_help($route_name, RouteMatchInterface $route_match)
     default:
   }
 }
-
 /**
  * Implements hook_theme().
  */
