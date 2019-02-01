@@ -11,6 +11,7 @@
     "source": "http://cgit.drupalcode.org/bits_developer_tool"
   },
   "require": {
-    "nette/php-generator" : "2.6"
+    "nette/php-generator" : "2.6",
+    "symfony/yaml": "3.4.x-dev"
   }
 }
