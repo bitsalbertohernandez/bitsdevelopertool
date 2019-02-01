@@ -1,0 +1,11 @@
+
+bits_developer_tool.general_config_form:
+  path: '/admin/config/bits_developer_tool/generalconfig'
+  defaults:
+    _form: '\Drupal\bits_developer_tool\Form\GeneralConfigForm'
+    _title: 'GeneralConfigForm'
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE
+

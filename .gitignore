@@ -2,3 +2,5 @@
 readme.txt
 README.txt
 vendor
+.vscode
+composer.lock
