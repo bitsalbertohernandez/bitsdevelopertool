@@ -1,5 +1,5 @@
 services:
-  file.builder:
+  phpfile.builder:
     class: Nette\PhpGenerator\PhpFile
     argument: []
 
@@ -8,5 +8,9 @@ services:
     argument: ["@file.builder"]
 
   file.manager:
-    class: Drupal\bits_developer_tool\Services\FileManager
+    class: Drupal\bits_developer_tool\Common\FileManager
+    argument: []
+
+  util.operation:
+    class: Drupal\bits_developer_tool\Common\Util
     argument: []
