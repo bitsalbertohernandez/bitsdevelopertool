@@ -45,6 +45,7 @@ class GeneralConfigForm extends ConfigFormBase {
       '#maxlength' => 255,
       '#description' => $this->t('Directorio Físico de la Clase Base de los Controladores'),
       '#size' => 60,
+      '#require' => TRUE,
       '#default_value' => $config->get('fisic_dir_base_controller') != null  ? $config->get('fisic_dir_base_controller') : "{modulo}/src/Controller",
     ];
     $form['details_controllers']['namespace_base_controller'] = [
@@ -53,6 +54,7 @@ class GeneralConfigForm extends ConfigFormBase {
       '#maxlength' => 255,
       '#description' => $this->t('Namespace de la Clase Base de los Controladores'),
       '#size' => 60,
+      '#require' => TRUE,
       '#default_value' => $config->get('namespace_base_controller') != null  ? $config->get('namespace_base_controller') : "Drupal\{modulo}\Controller",
     ];
     $form['details_controllers']['fisic_dir_logic_controller'] = [
@@ -61,6 +63,7 @@ class GeneralConfigForm extends ConfigFormBase {
       '#maxlength' => 255,
       '#description' => $this->t('Directorio Físico de la Clase Lógica de los Controladores'),
       '#size' => 60,
+      '#require' => TRUE,
       '#default_value' => $config->get('fisic_dir_logic_controller') != null  ? $config->get('fisic_dir_logic_controller') : "{modulo}/src/Services/Controller",
     ];
     $form['details_controllers']['namespace_logic_controller'] = [
@@ -69,6 +72,7 @@ class GeneralConfigForm extends ConfigFormBase {
       '#maxlength' => 255,
       '#description' => $this->t('Namespace de la Clase Lógica de los Controladores'),
       '#size' => 60,
+      '#require' => TRUE,
       '#default_value' => $config->get('namespace_logic_controller') != null  ? $config->get('namespace_logic_controller') : "Drupal\{modulo}\Services\Controller",
     ];
 
@@ -85,6 +89,7 @@ class GeneralConfigForm extends ConfigFormBase {
       '#maxlength' => 255,
       '#description' => $this->t('Directorio Físico de la Clase Base de los Bloques'),
       '#size' => 60,
+      '#require' => TRUE,
       '#default_value' => $config->get('fisic_dir_base_block') != null ? $config->get('fisic_dir_base_block') : "{modulo}/src/Plugin/Block",
     ];
     $form['details_blocks']['namespace_base_block'] = [
@@ -93,6 +98,7 @@ class GeneralConfigForm extends ConfigFormBase {
       '#maxlength' => 255,
       '#description' => $this->t('Namespace de la Clase Base de los Bloques'),
       '#size' => 60,
+      '#require' => TRUE,
       '#default_value' => $config->get('namespace_base_block') != null ? $config->get('namespace_base_block') : "Drupal\{modulo}\Plugin\Block",
     ];
     $form['details_blocks']['fisic_dir_logic_block'] = [
@@ -101,6 +107,7 @@ class GeneralConfigForm extends ConfigFormBase {
       '#maxlength' => 255,
       '#description' => $this->t('Directorio Físico de la Clase Lógica de los Bloques'),
       '#size' => 60,
+      '#require' => TRUE,
       '#default_value' => $config->get('fisic_dir_logic_block') != null ? $config->get('fisic_dir_logic_block') : "{modulo}/src/Plugin/Config/Block",
     ];
     $form['details_blocks']['namespace_logic_block'] = [
@@ -109,6 +116,7 @@ class GeneralConfigForm extends ConfigFormBase {
       '#maxlength' => 255,
       '#description' => $this->t('Namespace de la Clase Lógica de los Bloques'),
       '#size' => 60,
+      '#require' => TRUE,
       '#default_value' => $config->get('namespace_logic_block') != null ? $config->get('namespace_logic_block') : "Drupal\{modulo}\Plugin\Config\Block",
     ];
 
@@ -125,6 +133,7 @@ class GeneralConfigForm extends ConfigFormBase {
       '#maxlength' => 255,
       '#description' => $this->t('Directorio Físico de la Clase Base de los Formularios'),
       '#size' => 60,
+      '#require' => TRUE,
       '#default_value' => $config->get('fisic_dir_base_form') != null ? $config->get('fisic_dir_base_form') : "{modulo}/src/Form",
     ];
     $form['details_form']['namespace_base_form'] = [
@@ -133,6 +142,7 @@ class GeneralConfigForm extends ConfigFormBase {
       '#maxlength' => 255,
       '#description' => $this->t('Namespace de la Clase Base de los Formularios'),
       '#size' => 60,
+      '#require' => TRUE,
       '#default_value' => $config->get('namespace_base_form') != null ? $config->get('namespace_base_form') : "Drupal\{modulo}\Form",
     ];
     $form['details_form']['fisic_dir_logic_form'] = [
@@ -141,6 +151,7 @@ class GeneralConfigForm extends ConfigFormBase {
       '#maxlength' => 255,
       '#description' => $this->t('Directorio Físico de la Clase Lógica de los Formularios'),
       '#size' => 60,
+      '#require' => TRUE,
       '#default_value' => $config->get('fisic_dir_logic_form')  != null ? $config->get('fisic_dir_logic_form') : "{modulo}/src/Plugin/Config/Form"
     ];
     $form['details_form']['namespace_logic_form'] = [
@@ -149,6 +160,7 @@ class GeneralConfigForm extends ConfigFormBase {
       '#maxlength' => 255,
       '#description' => $this->t('Namespace de la Clase Lógica de los Formularios'),
       '#size' => 60,
+      '#require' => TRUE,
       '#default_value' => $config->get('namespace_logic_form')  != null ? $config->get('namespace_logic_form') : "Drupal\{modulo}\Plugin\Config\Block"
     ];
 
@@ -165,6 +177,7 @@ class GeneralConfigForm extends ConfigFormBase {
       '#maxlength' => 255,
       '#description' => $this->t('Directorio Físico de la Clase Base de los Servicios REST'),
       '#size' => 60,
+      '#require' => TRUE,
       '#default_value' => $config->get('fisic_dir_base_rest') != null ? $config->get('fisic_dir_base_rest') : "{modulo}/src/Plugin/rest/resource",
     ];
     $form['details_rest_services']['namespace_base_rest'] = [
@@ -173,6 +186,7 @@ class GeneralConfigForm extends ConfigFormBase {
       '#maxlength' => 255,
       '#description' => $this->t('Namespace de la Clase Base de los Servicios REST'),
       '#size' => 60,
+      '#require' => TRUE,
       '#default_value' => $config->get('namespace_base_rest') != null ? $config->get('namespace_base_rest') : 'Drupal\{modulo}\Plugin\rest\resource',
     ];
     $form['details_rest_services']['fisic_dir_logic_rest'] = [
@@ -181,6 +195,7 @@ class GeneralConfigForm extends ConfigFormBase {
       '#maxlength' => 255,
       '#description' => $this->t('Directorio Físico de la Clase Lógica de los Servicios REST'),
       '#size' => 60,
+      '#require' => TRUE,
       '#default_value' => $config->get('fisic_dir_logic_rest') != null ? $config->get('fisic_dir_logic_rest') : "{modulo}/src/Services/Rest",
     ];
     $form['details_rest_services']['namespace_logic_rest'] = [
@@ -189,6 +204,7 @@ class GeneralConfigForm extends ConfigFormBase {
       '#maxlength' => 255,
       '#description' => $this->t('Namespace de la Clase Lógica de los Servicios REST'),
       '#size' => 60,
+      '#require' => TRUE,
       '#default_value' => $config->get('namespace_logic_rest') != null ? $config->get('namespace_logic_rest') : "Drupal\{modulo}\Services\Rest",
     ];
     return parent::buildForm($form, $form_state);
