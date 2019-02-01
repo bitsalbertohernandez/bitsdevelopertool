@@ -1,6 +1,9 @@
 <?php
 namespace Drupal\bits_developer_tool\Common;
 
+use Symfony\Component\Yaml\Yaml;
+
+
 class Util
 {
   public function listModule()
@@ -16,5 +19,19 @@ class Util
     }
     return $custom_modules;
   }
-
+  /**
+   * Saber si existe una clave en el archivo yml
+   *
+   * @param string $dir
+   *  Directorio del archivo
+   * @param string $key
+   *  Clave a buscar
+   * @return void
+   */
+  public function existKeyInYMLFile($dir, $key)
+  {
+    $yaml = Yaml::parseFile($dir);
+    $array_key = array_keys($yaml);
+    return in_array($key, $array_key);
+  }
 }
