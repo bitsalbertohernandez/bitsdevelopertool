@@ -138,10 +138,27 @@ class FileManager
    */
   public function getFilePathByType($module_name, $file_name, $type)
   {
+    // ver como accedo a la configuracion de la ruta(Alejandro)
     $dir = $this->modulePath($module_name);
     $config_path = $this->config->get($type);
     $config_path = str_replace(FileManager::PATH_PREFIX, "", $config_path);
     return $dir . $config_path . '/' . $file_name;
+  }
+
+  /**
+   * Obtener el namespace del tipo de archivo.
+   *
+   * @param string $module_name
+   *  Nombre del módulo.
+   * @param string $type
+   *  Tipo de archivo de la clase TypeOfFile.
+   * @return void
+   */
+  public function getFileNameSpaceByType($module_name, $type)
+  {
+    // ver como accedo a la configuracion del namespace(Alejandro)
+    $config_namespace = $this->config->get($type);
+    return str_replace(FileManager::PATH_PREFIX, $module_name, $config_path);
   }
 
   /**

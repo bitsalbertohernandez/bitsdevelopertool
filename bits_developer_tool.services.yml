@@ -1,11 +1,7 @@
 services:
-  phpfile.builder:
-    class: Nette\PhpGenerator\PhpFile
-    argument: []
-
-  controller.builder:
-    class: Drupal\bits_developer_tool\Services\ControllerBuilder
-    argument: ["@file.builder"]
+  class.generator.template:
+    class: Drupal\bits_developer_tool\Common\ClassGeneratorTemplate
+    argument: ["@file.manager"]
 
   file.manager:
     class: Drupal\bits_developer_tool\Common\FileManager
