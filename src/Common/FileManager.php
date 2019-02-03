@@ -16,14 +16,16 @@ class FileManager
     $this->yaml = new SymfonyYaml();
     $this->config = \Drupal::config(FileManager::ID_CONFIG);
   }
+
   /**
-   * Salvar fichero en un directorio.
+   * Salvar datos en fichero.
    *
    * @param string $data
-   *  Datos para poner en el fichero.
+   *  Datos para guardar en el fichero.
    * @param string $dir_file
-   *  Ruta del archivo dentro del módulo.
-   * @return void
+   *  Ruta del archivo.
+   * @return boolean
+   *  Retorna true si se salvó la información y false en caso contrario.
    */
   public function saveGenerateFile($dir_file, $data)
   {
@@ -35,17 +37,18 @@ class FileManager
   }
 
   /**
-   * Copiar configuraciones en un archivo YAML.
+   * Copiar configuraciones en archivo YAML.
    *
    * @param string $dir
-   *  Dirección del archivo YAML.
+   *  Ruta del archivo YAML.
    * @param string $type
    *  Tipo de archivo yaml.
    * @param array $data
    *  Configuraciones.
-   * @return void
+   * @return boolean
+   *  Retorna true si se salvó la información y false en caso contrario.
    */
-  public function saveYAML($dir, $type = YAMLType::INFO_FILE, array $data)
+  public function saveYAMLConfig($dir, $type = YAMLType::INFO_FILE, array $data = [])
   {
     $data_file = $this->getYAMLData($dir);
     foreach ($data as $key => $value) {
@@ -60,11 +63,12 @@ class FileManager
   }
 
   /**
-   * Obtener datos del YAML.
+   * Obtener datos del archivo YAML.
    *
    * @param string $dir
-   *  Dirección del archivo YAML.
-   * @return void
+   *  Ruta del archivo.
+   * @return array
+   *  Configuraciones que contine el fichero.
    */
   public function getYAMLData($dir)
   {
@@ -73,13 +77,14 @@ class FileManager
   }
 
   /**
-   * Saber si existe una clave en el archivo YAML.
+   * Saber si existe una clave en la raiz del archivo YAML.
    *
    * @param string $dir
-   *  Directorio del archivo.
+   *  Ruta del archivo.
    * @param string $key
    *  Clave a buscar.
    * @return boolean
+   * Retorna true si existe la clave y false en caso contrario.
    */
   public function existKeyInYAMLFile($dir, $key)
   {
@@ -96,6 +101,8 @@ class FileManager
    * @param string $type_file
    *  Tipo de archivo contenido en la clase YAMLType.
    * @return string
+   *  Ruta del archivo.
+   *
    */
   public function getYAMLPath($module_name, $type_file)
   {
@@ -104,11 +111,12 @@ class FileManager
   }
 
   /**
-   * Obtener la dirección del módulo.
+   * Obtener la ruta del módulo.
    *
    * @param string $module_name
    *  Nombre del módulo.
    * @return string
+   *  Ruta del módulo
    */
   public function modulePath($module_name)
   {
@@ -116,7 +124,7 @@ class FileManager
   }
 
   /**
-   * Obtener el directorio por el tipo de archivo
+   * Obtenerla ruta por el tipo de archivo.
    *
    * @param string $type
    *  Tipo de archivo(Controlador, Servicio, Bloque, Formulario).
@@ -125,8 +133,10 @@ class FileManager
    * @param string $module_name
    *  Nombre del módulo.
    * @return string
+   *  Ruta del archivo.
+   *
    */
-  public function getFilePath($module_name, $file_name, $type)
+  public function getFilePathByType($module_name, $file_name, $type)
   {
     $dir = $this->modulePath($module_name);
     $config_path = $this->config->get($type);
@@ -140,6 +150,7 @@ class FileManager
    * @param string $dir
    *  Dirección del archivo.
    * @return string
+   *  Contenido del archivo.
    */
   public function getFileContent($dir)
   {
@@ -147,17 +158,18 @@ class FileManager
   }
 
   /**
-   * Guardar datos en el fichero.
+   * Guardar datos en fichero.
    *
    * @param string $data
    *  Datos para guardar.
    * @param string $dir_file
-   *  Directorio del fichero.
-   * @return void
+   *  Ruta del fichero.
+   * @return boolean
+   *  Retorna true si se salvó la información y false en caso contrario.
    */
   public function saveFile($dir_file, $data)
   {
-    return file_put_contents($dir_file, $data);
+    return (boolean)file_put_contents($dir_file, $data);
   }
 
 }

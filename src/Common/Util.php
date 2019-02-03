@@ -11,7 +11,7 @@ class Util
    * Obtener el listado de módulos.
    *
    * @return array
-   *  Retorna el arreglo de módulos.
+   *  Retorna un arreglo con los nombres de los módulos.
    */
   public function listModule()
   {
