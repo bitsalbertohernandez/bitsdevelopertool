@@ -8,7 +8,7 @@ use Nette\PhpGenerator\PhpNamespace as NameSpaceGenerator;
 use Nette\PhpGenerator\PsrPrinter as PrinterGenerator;
 use Nette\PhpGenerator\PhpLiteral as PhpLiteralGenerator;
 
-class ClassGeneratorTemplate
+class GeneryGenerator
 {
   protected $namespace;
   protected $method;
