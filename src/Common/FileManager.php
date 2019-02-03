@@ -10,7 +10,6 @@ class FileManager
   private $yaml;
   private const PATH_PREFIX = "{modulo}";
   private const ID_CONFIG = "developer_tool_form_config";
-  //protected $config;
 
   public function __construct()
   {

@@ -6,6 +6,13 @@ use Symfony\Component\Yaml\Yaml;
 
 class Util
 {
+
+  /**
+   * Obtener el listado de módulos.
+   *
+   * @return array
+   *  Retorna el arreglo de módulos.
+   */
   public function listModule()
   {
     $exclude_package = ['Core', 'Field types', 'Other'];
@@ -20,3 +27,4 @@ class Util
     return $custom_modules;
   }
 }
+
