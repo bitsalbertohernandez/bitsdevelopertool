@@ -6,6 +6,7 @@ use Nette\PhpGenerator\Method as MethodGenerator;
 use Nette\PhpGenerator\ClassType as ClassGenerator;
 use Nette\PhpGenerator\PhpNamespace as NameSpaceGenerator;
 use Nette\PhpGenerator\PsrPrinter as PrinterGenerator;
+use Nette\PhpGenerator\PhpLiteral as PhpLiteralGenerator;
 
 class ClassGeneratorTemplate
 {
@@ -16,6 +17,7 @@ class ClassGeneratorTemplate
   protected $comment;
   protected $use;
   private $file_manager;
+  protected $property;
 
   public function __construct(FileManager $file_manager)
   {
@@ -23,6 +25,7 @@ class ClassGeneratorTemplate
     $this->extend = [];
     $this->comment = [];
     $this->use = [];
+    $this->property = [];
     $this->file_manager = $file_manager;
   }
 
@@ -119,6 +122,31 @@ class ClassGeneratorTemplate
   }
 
   /**
+   * Agregar atributo a la clase
+   *
+   * @param string $name
+   *  Nombre del atributo.
+   * @param string $value
+   *  Valor del atributo.
+   * @param boolean $is_literar
+   *  Si true el valor se asigna tal cual se escribe.
+   * @param string $visibility
+   *  Tipos de visibilidad (private, protected, public).
+   * @param boolean $static
+   *  True si el atributo es estático.
+   * @return void
+   */
+  public function addClassProperty($name, $value = "", $is_literar = false, $visibility = 'private', $static = false)
+  {
+    $property['name'] = $name;
+    $property['value'] = $value;
+    $property['visibility'] = $visibility;
+    $property['static'] = $static;
+    $property['is_literar'] = $is_literar;
+    array_push($this->property, $property);
+  }
+
+  /**
    * Generar clase
    *
    * @param string $module
@@ -153,6 +181,23 @@ class ClassGeneratorTemplate
 
     if ($this->implement) {
       $class_generated->setImplements($this->implement);
+    }
+
+    foreach ($this->property as $value) {
+
+      $class_generated->setVisibility($value['visibility']);
+
+      if ($value['value'] !== "" && $value['is_literar']) {
+        $class_generated->addProperty($value['name'], new PhpLiteralGenerator($value['value']));
+      } elseif ($value['value'] !== "") {
+        $class_generated->addProperty($value['name'], $value['value']);
+      } else {
+        $class_generated->addProperty($value['name']);
+      }
+
+      if ($value['static']) {
+        $class_generated->setStatic();
+      }
     }
 
     foreach ($this->method as $value) {
