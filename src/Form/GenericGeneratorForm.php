@@ -5,9 +5,11 @@ namespace Drupal\bits_developer_tool\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\bits_developer_tool\Common\FileManager;
 
-class GenericGeneratorForm extends FormBase
+abstract class GenericGeneratorForm extends FormBase
 {
+  private $global_config;
   /**
    * {@inheritdoc}.
    */
@@ -21,160 +23,100 @@ class GenericGeneratorForm extends FormBase
    */
   public function buildForm(array $form, FormStateInterface $form_state)
   {
+    $this->global_config = \Drupal::config(FileManager::ID_CONFIG);
     $module_list = \Drupal::service('bits_developer.util.operation')->listModule();
     if (count($module_list) == 0) {
       $module_list = ['prueba1', 'prueba2'];
     }
-    $form['generic_ajax_container'] = [
-      '#type' => 'container',
-      '#attributes' => [
-        'id' => 'generic_ajax_container',
-      ],
-    ];
-    $form['generic_ajax_container']['module'] = [
+     // Select de módulos.
+    $form['generator']['module'] = [
       '#type' => 'select',
-      '#title' => $this->t('Módulo'),
       '#empty_value' => '',
       '#empty_option' => '- Selecione módulo -',
       '#options' => $module_list,
       '#ajax' => [
         'callback' => [$this, 'mySelectChange'],
         'event' => 'change',
-        'wrapper' => 'generic_ajax_container',
+        'wrapper' => 'replace_container',
       ],
     ];
 
-    $form['generic_ajax_container']['only_logic'] = [
+    // Checbox para saber si es integración.
+    $form['generator']['only_logic'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Solo generar clase lógica'),
+      '#title' => $this->t('Generar integración'),
     ];
-/*
-    $form['generic_ajax_container']['table_extend'] = [
-      '#type' => 'details',
-      '#title' => t('Clase base'),
-      '#open' => true,
-      '#states' => [
-        'invisible' => [
-          ':input[name="only_logic"]' => ['checked' => true],
-        ],
-      ],
-    ];
-    $form['generic_ajax_container']['table_extend']['name_space_extend'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Namespace'),
-      '#default_value' => '',
-      '#description' => "Namespace de la clase que se heredará.",
-    ];
-    $form['generic_ajax_container']['table_extend']['name_extend'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Nombre'),
-      '#default_value' => '',
-      '#description' => "Nombre de la clase que se heredará.",
-    ];*/
-    $form['generic_ajax_container']['table_controller'] = [
-      '#type' => 'details',
-      '#title' => t('Clase controladora'),
-      '#open' => true,
-      '#states' => [
-        'invisible' => [
-          ':input[name="only_logic"]' => ['checked' => true],
-        ],
-      ],
-    ];
-    $form['generic_ajax_container']['table_controller']['name_space_controller'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Namespace'),
-      '#default_value' => '',
-      '#description' => "Namespace del controlador.",
-      '#attributes' => ['readonly' => 'readonly'],
 
+    // Contenedor de las tablas.
+    $form['generator_container'] = [
+      '#type' => 'container',
+      '#attributes' => [
+        'id' => 'replace_container',
+      ],
     ];
-    $form['generic_ajax_container']['table_controller']['path_controller'] = [
+
+    // Tablas de las clases bases de regional.
+    $form['generator_container']['regional'] = [
+      '#type' => 'details',
+      '#title' => t('Definir ' . $this->className()),
+      '#open' => true,
+      '#states' => [
+        'invisible' => [
+          ':input[name="only_logic"]' => ['checked' => true],
+        ],
+      ],
+    ];
+
+    $form['generator_container']['regional']['name_space'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Namespace'),
+      '#default_value' => $this->global_config->get('namespace_base_' . $this->typeOfFile()),
+      '#description' => "Namespace del " . $this->className(),
+      '#attributes' => ['readonly' => 'readonly'],
+    ];
+    $form['generator_container']['regional']['path'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Directorio'),
-      '#default_value' => '',
-      '#description' => "Directorio físico del controlador.",
+      '#default_value' => $this->global_config->get('fisic_dir_base_' . $this->typeOfFile()),
+      '#description' => "Directorio físico del " . $this->className(),
       '#attributes' => ['readonly' => 'readonly'],
-
     ];
-    $form['generic_ajax_container']['table_controller']['name_controller'] = [
+    $form['generator_container']['regional']['service'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Nombre'),
+      '#title' => $this->t('Identificador del servicio'),
       '#default_value' => '',
-      '#description' => "Al nombre se le agregará el sufijo configurado.",
+      '#description' => "El identificador no debe contener espacios no caracteres extraños",
+      '#required' => true
     ];
 
-    $form['service_logic'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Servicio'),
-      '#default_value' => '',
-      '#description' => "Identificador del servicio de la clase lógica.",
+    // Tabla de las clases lógicas de las clases regionales.
+    $form['generator_container']['regional_logic'] = [
+      '#type' => 'details',
+      '#title' => t('Definir lógica del ' . $this->className()),
+      '#open' => true,
       '#states' => [
         'invisible' => [
           ':input[name="only_logic"]' => ['checked' => true],
         ],
       ],
     ];
-/*
-    $form['generic_ajax_container']['table_extend_logic'] = [
-      '#type' => 'details',
-      '#title' => t('Clase lógica base'),
-      '#open' => true,
-      '#states' => [
-        'invisible' => [
-          ':input[name="only_logic"]' => ['checked' => false],
-        ],
-      ],
-    ];
-    $form['generic_ajax_container']['table_extend_logic']['name_space_extend_logic'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Namespace'),
-      '#default_value' => '',
-      '#description' => "Namespace de la clase lógica que se heredará.",
-    ];
-    $form['generic_ajax_container']['table_extend_logic']['name_extend_logic'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Nombre'),
-      '#default_value' => '',
-      '#description' => "Nombre de la clase lógica que se heredará.",
-    ];
-    $form['generic_ajax_container']['table_controller_logic'] = [
-      '#type' => 'details',
-      '#title' => t('Clase lógica del controlador'),
-      '#open' => true,
-      '#states' => [
-        'invisible' => [
-          ':input[name="only_logic"]' => ['checked' => false],
-        ],
-      ],
-    ];
-    $form['generic_ajax_container']['table_controller_logic']['name_space_controller_logic'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Namespace'),
-      '#default_value' => '',
-      '#description' => "Namespace de la clase lógica del controlador.",
-      '#attributes' => ['readonly' => 'readonly'],
 
+    $form['generator_container']['regional_logic']['name_space'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Namespace'),
+      '#default_value' => $this->global_config->get('namespace_logic_' . $this->typeOfFile()),
+      '#description' => "Namespace de la clase lógica del " . $this->className(),
+      '#attributes' => ['readonly' => 'readonly'],
     ];
-    $form['generic_ajax_container']['table_controller_logic']['path_controller_logic'] = [
+    $form['generator_container']['regional_logic']['path'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Directorio'),
-      '#default_value' => '',
-      '#description' => "Directorio físico de la lógica del controlador.",
+      '#default_value' => $this->global_config->get('fisic_dir_logic_' . $this->typeOfFile()),
+      '#description' => "Directorio físico de la clase lógica del " . $this->className(),
       '#attributes' => ['readonly' => 'readonly'],
-
     ];
-    $form['generic_ajax_container']['table_controller_logic']['name_controller_logic'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Nombre'),
-      '#default_value' => '',
-      '#description' => "Al nombre se le agregará el sufijo configurado.",
-    ];*/
-    $form['generic_ajax_container']['old_module'] = array(
-      '#type' => 'hidden',
-      '#value' => '{modulo}',
-    );
 
+    // Boton para generar las clases.
     $form['actions'] = [
       '#type' => 'button',
       '#value' => $this->t('Generar'),
@@ -188,32 +130,40 @@ class GenericGeneratorForm extends FormBase
   }
 
   /**
-   * {@inheritdoc}
+   * Coloca el nombre del módulo en las rutas de los namespace y los directorios físicos.
+   *
+   * @param array $form
+   * @param FormStateInterface $form_state
+   * @return void
    */
-  public function submitForm(array &$form, FormStateInterface $form_state)
-  {
-
-  }
-
   public function mySelectChange(array &$form, FormStateInterface &$form_state)
   {
     $module_name = $form_state->getTriggeringElement()['#options'][$form_state->getValue('module')];
 
     if (isset($module_name)) {
-      $old_module = $form_state->getValue('old_module');
-      $name_space_controller = $form_state->getValue('name_space_controller');
-      $path_controller = $form_state->getValue('path_controller');
-      $name_space_controller_logic = $form_state->getValue('name_space_controller_logic');
-      $path_controller_logic = $form_state->getValue('path_controller_logic');
 
-      $form['generic_ajax_container']['table_controller']['name_space_controller']['#value'] = str_replace($old_module, $module_name, $name_space_controller);
-      $form['generic_ajax_container']['table_controller']['path_controller']['#value'] = str_replace($old_module, $module_name, $path_controller);
-      $form['generic_ajax_container']['table_controller_logic']['name_space_controller_logic']['#value'] = str_replace($old_module, $module_name, $name_space_controller_logic);
-      $form['generic_ajax_container']['table_controller_logic']['path_controller_logic']['#value'] = str_replace($old_module, $module_name, $path_controller_logic);
-      $form_state->set('old_module', $module_name);
-      $form_state->setRebuild(false);
-      return $form['generic_ajax_container'];
+      // Re emplazando el nombre del módulo en las rutas reginales
+      $name_space = $this->global_config->get('namespace_base_' . $this->typeOfFile());
+      $path = $this->global_config->get('fisic_dir_base_' . $this->typeOfFile());
+
+      $form['generator_container']['regional']['name_space']['#value'] = str_replace(FileManager::PATH_PREFIX, $module_name, $name_space);
+      $form['generator_container']['regional']['path']['#value'] = str_replace(FileManager::PATH_PREFIX, $module_name, $path);
+
+      // Re emplazando el nombre del módulo en las rutas reginales lógicas.
+      $name_space_logic = $this->global_config->get('namespace_logic_' . $this->typeOfFile());
+      $path_logic = $this->global_config->get('fisic_dir_logic_' . $this->typeOfFile());
+
+      $form['generator_container']['regional_logic']['name_space']['#value'] = str_replace(FileManager::PATH_PREFIX, $module_name, $name_space_logic);
+      $form['generator_container']['regional_logic']['path']['#value'] = str_replace(FileManager::PATH_PREFIX, $module_name, $path_logic);
+
+      return $form['generator_container'];
     }
 
   }
+
+  // Metodo que devuelve el nombre de la clase.Ejemplo (Controlador, Bloque, Formulario, Servicio)
+  public abstract function className();
+
+  // Método que devuelve el tipo de servicio. Ejemplo (controller, block, form, rest )
+  public abstract function typeOfFile();
 }
