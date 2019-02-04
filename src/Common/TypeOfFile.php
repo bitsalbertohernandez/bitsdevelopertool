@@ -1,30 +1,19 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Albe
- * Date: 02-Oct-18
- * Time: 9:54 PM
- */
-
 namespace Drupal\bits_developer_tool\Common;
 
+class TypeOfFile
+{
 
-class TypeOfFile {
-  
-  public static $CONTROLLER = "Controller";
-  
-  public static $SERVICE = "Service";
-  
-  public static $FORM = "Form";
-  
-  public static $REST = "Rest";
-  
-  public static $CONTROLLER_PATH = "src/Controller/";
-  
-  public static $SERVICE_PATH = "src/Services/";
-  
-  public static $FORM_PATH = "src/Form/";
-  
-  public static $REST_PATH = "src/Plugin/rest/resource/";
-  
+  const CONTROLLER = "controller";
+  const CONTROLLER_LOGIC = "controller_logic";
+
+  const SERVICE = "service";
+  const SERVICE_LOGIC = "service_logic";
+
+  const BLOCK = "block";
+  const BLOCK_LOGIC = "block_logic";
+
+  const FORM = "form";
+  const FROM_LOGIC = "form_logic";
+
 }

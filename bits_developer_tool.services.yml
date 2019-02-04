@@ -1,12 +1,12 @@
 services:
-  file.builder:
-    class: Nette\PhpGenerator\PhpFile
+  bits_developer.genery.generator:
+    class: Drupal\bits_developer_tool\Common\GeneryGenerator
+    argument: ["@bits_developer.file.manager"]
+
+  bits_developer.file.manager:
+    class: Drupal\bits_developer_tool\Common\FileManager
     argument: []
 
-  controller.builder:
-    class: Drupal\bits_developer_tool\Services\ControllerBuilder
-    argument: ["@file.builder"]
-
-  file.manager:
-    class: Drupal\bits_developer_tool\Services\FileManager
+  bits_developer.util.operation:
+    class: Drupal\bits_developer_tool\Common\Util
     argument: []
