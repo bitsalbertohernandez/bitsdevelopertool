@@ -1,0 +1,7 @@
+bits_developer_tool.general_config_form:
+  title: 'GeneralConfigForm'
+  route_name: bits_developer_tool.general_config_form
+  description: 'Configuración General para los Elementos del Generador de Código'
+  parent: system.admin_config_system
+  weight: 99
+
