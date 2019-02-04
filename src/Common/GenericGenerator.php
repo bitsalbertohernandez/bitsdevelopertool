@@ -84,17 +84,13 @@ class GenericGenerator
   /**
    * Adicionar el namespace de la clase.
    *
-   * @param string $module
-   *  Nombre del módulo al que pertenece el archivo.
-   *
-   * @param string $file_type
-   *  Tipo de fichero que se va a generar.
+   * @param string $namespace
+   *  Namespace de la clase.
    * @return void
    */
-  private function addNameSpace($module, $file_type)
+  public function addNameSpace($namespace)
   {
-    $this->namespace = $this->file_manager->getFileNameSpaceByType($module, $file_type);
-    return new NameSpaceGenerator($this->namespace);
+    $this->namespace = $namespace;
   }
 
   /**
@@ -149,21 +145,15 @@ class GenericGenerator
   /**
    * Generar clase
    *
-   * @param string $module
-   *  Nombre del módulo al que pertenece el archivo.
-   *
-   * @param string $file_type
-   *  Tipo de fichero que se va a generar.
-   *
    * @param string $class
    *  Nombre de la clase.
    * @return string
    *  Clase generada en un string.
    */
-  public function generateClass($module, $file_type, $class)
+  public function generateClass($class)
   {
 
-    $namespace = $this->addNameSpace($module, $file_type);
+    $namespace = new NameSpaceGenerator($this->namespace);
 
     foreach ($this->use as $element) {
       $namespace->addUse($element);
