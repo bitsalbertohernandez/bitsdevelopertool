@@ -25,9 +25,6 @@ abstract class GenericGeneratorForm extends FormBase
   {
     $this->global_config = \Drupal::config(FileManager::ID_CONFIG);
     $module_list = \Drupal::service('bits_developer.util.operation')->listModule();
-    if (count($module_list) == 0) {
-      $module_list = ['prueba1', 'prueba2'];
-    }
      // Select de módulos.
     $form['generator']['module'] = [
       '#type' => 'select',
