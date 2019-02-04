@@ -7,7 +7,7 @@ class TypeOfFile
   const CONTROLLER = "controller";
   const CONTROLLER_LOGIC = "controller_logic";
 
-  const SERVICE = "service";
+  const SERVICE = "rest";
   const SERVICE_LOGIC = "service_logic";
 
   const BLOCK = "block";
