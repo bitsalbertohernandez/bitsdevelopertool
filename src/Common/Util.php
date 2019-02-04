@@ -1,8 +1,18 @@
 <?php
 namespace Drupal\bits_developer_tool\Common;
 
+use Symfony\Component\Yaml\Yaml;
+
+
 class Util
 {
+
+  /**
+   * Obtener el listado de módulos.
+   *
+   * @return array
+   *  Retorna un arreglo con los nombres de los módulos.
+   */
   public function listModule()
   {
     $exclude_package = ['Core', 'Field types', 'Other'];
@@ -16,5 +26,5 @@ class Util
     }
     return $custom_modules;
   }
-
 }
+
