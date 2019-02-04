@@ -8,8 +8,8 @@ class FileManager
 {
 
   private $yaml;
-  private const PATH_PREFIX = "{modulo}";
-  private const ID_CONFIG = "developer_tool_form_config";
+  public const PATH_PREFIX = "{modulo}";
+  public const ID_CONFIG = "bits_developer_tool.generalconfig";
 
   public function __construct()
   {
