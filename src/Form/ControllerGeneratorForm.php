@@ -20,12 +20,12 @@ class ControllerGeneratorForm extends GenericGeneratorForm
   }
   public function className()
   {
-    return ClassName::CONTROLLER;
+    return ClassName::REST;
   }
 
   public function typeOfFile()
   {
-    return TypeOfFile::CONTROLLER;
+    return TypeOfFile::SERVICE;
   }
 
 
@@ -41,7 +41,7 @@ class ControllerGeneratorForm extends GenericGeneratorForm
       $builder_controller->addModule($module);
       $builder_controller->addIdentificator($service_regional);
       $builder_controller->addLogicClass($class_regional_logic);
-      $success = $builder_controller->buildController();
+      $success = $builder_controller->buildFiles();
       $a = $success;
     }
 

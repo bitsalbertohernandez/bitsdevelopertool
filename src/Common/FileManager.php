@@ -10,30 +10,12 @@ class FileManager
   private $yaml;
   public const PATH_PREFIX = "{modulo}";
   public const ID_CONFIG = "bits_developer_tool.generalconfig";
+  private $namespace_path;
 
   public function __construct()
   {
     $this->yaml = new SymfonyYaml();
-    $this->config = \Drupal::config(FileManager::ID_CONFIG);
-  }
-
-  /**
-   * Salvar datos en fichero.
-   *
-   * @param string $data
-   *  Datos para guardar en el fichero.
-   * @param string $dir_file
-   *  Ruta del archivo.
-   * @return boolean
-   *  Retorna true si se salvó la información y false en caso contrario.
-   */
-  public function saveGenerateFile($dir_file, $data)
-  {
-    // No se ha probado aun...
-    if (!file_exists($dir_file)) {
-      mkdir($dir_file, 0770, true);
-    }
-    return $this->saveFile($dir_file, $data);
+    $this->namespace_path = \Drupal::service('bits_developer.namespace.path');
   }
 
   /**
@@ -48,17 +30,19 @@ class FileManager
    * @return boolean
    *  Retorna true si se salvó la información y false en caso contrario.
    */
-  public function saveYAMLConfig($dir, $type = YAMLType::INFO_FILE, array $data = [])
+  public function saveYAMLConfig($dir, array $data = [], $type = YAMLType::INFO_FILE)
   {
+    $level = 2;
     $data_file = $this->getYAMLData($dir);
     foreach ($data as $key => $value) {
       if ($type == YAMLType::SERVICES_FILE) {
+        $level = 3;
         $data_file['services'][$key] = $value;
       } else {
         $data_file[$key] = $value;
       }
     }
-    $yaml_data = $this->yaml->dump($data_file, 2, 2);
+    $yaml_data = $this->yaml->dump($data_file, $level, 2);
     return $this->saveFile($dir, $yaml_data);
   }
 
@@ -136,30 +120,14 @@ class FileManager
    *  Ruta del archivo.
    *
    */
-  public function getFilePathByType($module_name, $file_name, $type)
+  public function getFilePath($module_name, $file_dir)
   {
     // ver como accedo a la configuracion de la ruta(Alejandro)
     $dir = $this->modulePath($module_name);
-    $config_path = $this->config->get($type);
-    $config_path = str_replace(FileManager::PATH_PREFIX, "", $config_path);
-    return $dir . $config_path . '/' . $file_name;
+    $config_path = str_replace(FileManager::PATH_PREFIX, "", $file_dir);
+    return $dir . $config_path;
   }
 
-  /**
-   * Obtener el namespace del tipo de archivo.
-   *
-   * @param string $module_name
-   *  Nombre del módulo.
-   * @param string $type
-   *  Tipo de archivo de la clase TypeOfFile.
-   * @return void
-   */
-  public function getFileNameSpaceByType($module_name, $type)
-  {
-    // ver como accedo a la configuracion del namespace(Alejandro)
-    $config_namespace = $this->config->get($type);
-    return str_replace(FileManager::PATH_PREFIX, $module_name, $config_path);
-  }
 
   /**
    * Obtener el contenido de un archivo
@@ -186,7 +154,7 @@ class FileManager
    */
   public function saveFile($dir_file, $data)
   {
-    return (boolean)file_put_contents($dir_file, $data);
+    return (bool)file_put_contents($dir_file, $data);
   }
 
 }

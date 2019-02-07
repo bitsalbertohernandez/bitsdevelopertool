@@ -5,6 +5,7 @@ use Drupal\bits_developer_tool\Generators\ControllerGenerator;
 use Drupal\bits_developer_tool\Common\FileManager;
 use Drupal\bits_developer_tool\Common\TypeOfFile;
 use Drupal\bits_developer_tool\Common\NameSpacePathConfig;
+use Drupal\bits_developer_tool\Common\YAMLType;
 
 class RegionalControllerBuilder
 {
@@ -40,25 +41,37 @@ class RegionalControllerBuilder
     $this->logic_Class = $logic_Class;
   }
 
-  public function buildController()
+  public function buildFiles()
   {
-    $controller = $this->generateControllerClass(TypeOfFile::CONTROLLER);
-    $dir_file = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getPath(TypeOfFile::CONTROLLER));
-    $dir_file = $dir_file . '/' . $this->class . '.php';
-    $success = $this->file_manager->saveGenerateFile($dir_file, $controller);
-    return $success;
+    if ($this->generateControllerClass(TypeOfFile::CONTROLLER)) {
+      $this->generateYAMLConfig();
+    }
   }
 
   private function generateControllerClass($type)
   {
     $controller_generator = new ControllerGenerator($this->file_manager);
+    $success = false;
     $code = "";
     if ($type == TypeOfFile::CONTROLLER) {
       $controller_generator->addNameSpace(str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::CONTROLLER)));
       $code = $controller_generator->generateClass($this->class);
+      $dir_file = str_replace(FileManager::PATH_PREFIX, '', $this->namespace_path->getPath(TypeOfFile::CONTROLLER)) . '/' . $this->class . '.php';
+      $dir_module = $this->file_manager->modulePath($this->module, $dir_file);
+      $dir_file = $dir_module . $dir_file;
+      $success = $this->file_manager->saveFile($dir_file, $code);
     } /*else {
 
     }*/
-    return $code;
+    return $success;
+  }
+  private function generateYAMLConfig()
+  {
+    $class = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::CONTROLLER)) . '\\' . $this->class;
+    $data[$this->identificator]['class'] = $class;
+    $data[$this->identificator]['arguments'] = [];
+    $yaml_dir = $this->file_manager->getYAMLPath($this->module, YAMLType::SERVICES_FILE);
+    return $this->file_manager->saveYAMLConfig($yaml_dir, $data, YAMLType::SERVICES_FILE);
+
   }
 }

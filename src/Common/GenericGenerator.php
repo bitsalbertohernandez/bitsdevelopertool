@@ -193,9 +193,6 @@ class GenericGenerator
     foreach ($this->method as $value) {
       $class_generated->addMethod($value);
     }
-
-    $printer = new PrinterGenerator();
-
-    return $printer->printClass($class_generated);
+    return $namespace;
   }
 }
