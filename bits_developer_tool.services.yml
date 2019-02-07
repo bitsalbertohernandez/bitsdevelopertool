@@ -1,7 +1,7 @@
 services:
-  bits_developer.genery.generator:
-    class: Drupal\bits_developer_tool\Common\GeneryGenerator
-    argument: ["@bits_developer.file.manager"]
+  bits_developer.controller.generator:
+    class: Drupal\bits_developer_tool\Generators\ControllerGenerator
+    argument: []
 
   bits_developer.file.manager:
     class: Drupal\bits_developer_tool\Common\FileManager
@@ -9,4 +9,16 @@ services:
 
   bits_developer.util.operation:
     class: Drupal\bits_developer_tool\Common\Util
+    argument: []
+
+  bits_developer.namespace.path:
+    class: Drupal\bits_developer_tool\Common\NameSpacePathConfig
+    argument: []
+
+  bits_developer.reg-controller.builder:
+    class: Drupal\bits_developer_tool\Services\RegionalControllerBuilder
+    argument: []
+
+  bits_developer.int-controller.builder:
+    class: Drupal\bits_developer_tool\Services\IntegrationControllerBuilder
     argument: []

@@ -19,14 +19,14 @@ class GenericGenerator
   private $file_manager;
   protected $property;
 
-  public function __construct(FileManager $file_manager)
+  public function __construct()
   {
     $this->method = [];
     $this->extend = [];
     $this->comment = [];
     $this->use = [];
     $this->property = [];
-    $this->file_manager = $file_manager;
+    $this->file_manager = \Drupal::service('bits_developer.file.manager');
   }
 
   /**
