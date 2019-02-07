@@ -6,10 +6,16 @@ namespace Drupal\bits_developer_tool\Form;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\bits_developer_tool\Common\FileManager;
+use Drupal\bits_developer_tool\Common\TypeOfFile;
 
 abstract class GenericGeneratorForm extends FormBase
 {
   private $global_config;
+  private $namespace_path_config;
+  private $namespace;
+  private $namespace_logic;
+  private $path;
+  private $path_logic;
 
   /**
    * {@inheritdoc}.
@@ -17,6 +23,15 @@ abstract class GenericGeneratorForm extends FormBase
   public function buildForm(array $form, FormStateInterface $form_state)
   {
     $this->global_config = \Drupal::config(FileManager::ID_CONFIG);
+
+    $this->namespace_path_config = \Drupal::service('bits_developer.namespace.path');
+
+    $this->namespace = $this->namespace_path_config->getNameSpace($this->typeOfFile());
+    $this->path = $this->namespace_path_config->getPath($this->typeOfFile());
+
+    $this->namespace_logic = $this->namespace_path_config->getNameSpaceLogic($this->typeOfFile());
+    $this->path_logic = $this->namespace_path_config->getPathLogic($this->typeOfFile());
+
     $module_list = \Drupal::service('bits_developer.util.operation')->listModule();
 
 
@@ -72,33 +87,33 @@ abstract class GenericGeneratorForm extends FormBase
       ],
     ];
 
-    $form['generator_container']['regional']['name_space'] = [
+    $form['generator_container']['regional']['name_space_regional'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Namespace'),
-      '#default_value' => $this->global_config->get('namespace_base_' . $this->typeOfFile()),
+      '#default_value' => $this->namespace,
       '#description' => t("Namespace del " . $this->className()),
       '#attributes' => ['readonly' => 'readonly'],
     ];
-    $form['generator_container']['regional']['path'] = [
+    $form['generator_container']['regional']['path_regional'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Directorio'),
-      '#default_value' => $this->global_config->get('fisic_dir_base_' . $this->typeOfFile()),
+      '#default_value' => $this->path,
       '#description' => t("Directorio físico del " . $this->className()),
       '#attributes' => ['readonly' => 'readonly'],
     ];
-    $form['generator_container']['regional']['service'] = [
+    $form['generator_container']['regional']['service_regional'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Identificador del servicio'),
       '#default_value' => '',
       '#description' => t("El identificador no debe contener espacios no caracteres extraños"),
-      '#required' => true
+      //'#required' => true
     ];
-    $form['generator_container']['regional']['class'] = [
+    $form['generator_container']['regional']['class_regional'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Nombre de la clase'),
       '#default_value' => '',
       '#description' => t("Nombre con el que se generará la clase."),
-      '#required' => true
+      //'#required' => true
     ];
 
     // Tabla de las clases lógicas regionales.
@@ -113,26 +128,26 @@ abstract class GenericGeneratorForm extends FormBase
       ],
     ];
 
-    $form['generator_container']['regional_logic']['name_space'] = [
+    $form['generator_container']['regional_logic']['name_space_regional_logic'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Namespace'),
-      '#default_value' => $this->global_config->get('namespace_logic_' . $this->typeOfFile()),
+      '#default_value' => $this->namespace_logic,
       '#description' => "Namespace de la clase lógica del " . $this->className(),
       '#attributes' => ['readonly' => 'readonly'],
     ];
-    $form['generator_container']['regional_logic']['path'] = [
+    $form['generator_container']['regional_logic']['path_regional_logic'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Directorio'),
-      '#default_value' => $this->global_config->get('fisic_dir_logic_' . $this->typeOfFile()),
+      '#default_value' => $this->path_logic,
       '#description' => "Directorio físico de la clase lógica del " . $this->className(),
       '#attributes' => ['readonly' => 'readonly'],
     ];
-    $form['generator_container']['regional_logic']['class'] = [
+    $form['generator_container']['regional_logic']['class_regional_logic'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Nombre de la clase'),
       '#default_value' => '',
       '#description' => t("Nombre con el que se generará la clase."),
-      '#required' => true
+      //'#required' => true
     ];
 
     // Tablas para las integraciones
@@ -159,27 +174,27 @@ abstract class GenericGeneratorForm extends FormBase
         'wrapper' => 'replace_container2',
       ],
     ];
-    $form['generator_container2']['integration']['name_space'] = [
+    $form['generator_container2']['integration']['name_space_integration'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Namespace'),
-      '#default_value' => $this->global_config->get('namespace_base_' . $this->typeOfFile()),
+      '#default_value' => $this->namespace,
       '#description' => t("Namespace del " . $this->className() . " regional"),
       '#attributes' => ['readonly' => 'readonly'],
     ];
 
-    $form['generator_container2']['integration']['service'] = [
+    $form['generator_container2']['integration']['service_integration'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Identificador del servicio regional'),
       '#default_value' => '',
       '#description' => t("El identificador no debe contener espacios, ni caracteres extraños"),
-      '#required' => true
+      //'#required' => true
     ];
-    $form['generator_container2']['integration']['class'] = [
+    $form['generator_container2']['integration']['class_integration'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Nombre de la clase'),
       '#default_value' => '',
       '#description' => t("Nombre de la clase lógica regional."),
-      '#required' => true
+      //'#required' => true
     ];
 
       // Tabla de las clases lógicas de integration.
@@ -207,31 +222,31 @@ abstract class GenericGeneratorForm extends FormBase
       ],
     ];
 
-    $form['generator_container2']['integration_logic']['name_space'] = [
+    $form['generator_container2']['integration_logic']['name_space_integration_logic'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Namespace'),
-      '#default_value' => $this->global_config->get('namespace_logic_' . $this->typeOfFile()),
+      '#default_value' => $this->namespace_logic,
       '#description' => "Namespace de la clase lógica del " . $this->className(),
       '#attributes' => ['readonly' => 'readonly'],
     ];
-    $form['generator_container2']['integration_logic']['path'] = [
+    $form['generator_container2']['integration_logic']['path_integration_logic'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Directorio'),
-      '#default_value' => $this->global_config->get('fisic_dir_logic_' . $this->typeOfFile()),
+      '#default_value' => $this->path_logic,
       '#description' => "Directorio físico de la clase lógica del " . $this->className(),
       '#attributes' => ['readonly' => 'readonly'],
     ];
-    $form['generator_container2']['integration_logic']['class'] = [
+    $form['generator_container2']['integration_logic']['class_integration_logic'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Nombre de la clase'),
       '#default_value' => '',
       '#description' => t("Nombre con el que se generará la clase."),
-      '#required' => true
+      //'#required' => true
     ];
 
     // Boton para generar las clases.
     $form['actions'] = [
-      '#type' => 'button',
+      '#type' => 'submit',
       '#value' => $this->t('Generar'),
     ];
 
@@ -251,19 +266,16 @@ abstract class GenericGeneratorForm extends FormBase
 
     if (isset($module_name)) {
 
-      // Re emplazando el nombre del módulo en las rutas reginales
-      $name_space = $this->global_config->get('namespace_base_' . $this->typeOfFile());
-      $path = $this->global_config->get('fisic_dir_base_' . $this->typeOfFile());
-
-      $form['generator_container']['regional']['name_space']['#value'] = str_replace(FileManager::PATH_PREFIX, $module_name, $name_space);
-      $form['generator_container']['regional']['path']['#value'] = str_replace(FileManager::PATH_PREFIX, $module_name, $path);
+      $form['generator_container']['regional']['name_space_regional']['#value'] = str_replace(FileManager::PATH_PREFIX, $module_name, $this->namespace);
+      $form['generator_container']['regional']['path_regional']['#value'] = str_replace(FileManager::PATH_PREFIX, $module_name, $this->path);
 
       // Re emplazando el nombre del módulo en las rutas reginales lógicas.
       $name_space_logic = $this->global_config->get('namespace_logic_' . $this->typeOfFile());
       $path_logic = $this->global_config->get('fisic_dir_logic_' . $this->typeOfFile());
 
-      $form['generator_container']['regional_logic']['name_space']['#value'] = str_replace(FileManager::PATH_PREFIX, $module_name, $name_space_logic);
-      $form['generator_container']['regional_logic']['path']['#value'] = str_replace(FileManager::PATH_PREFIX, $module_name, $path_logic);
+      $form['generator_container']['regional_logic']['name_space_regional_logic']['#value'] = str_replace(FileManager::PATH_PREFIX, $module_name, $this->namespace_logic);
+      $form['generator_container']['regional_logic']['path_regional_logic']['#value'] = str_replace(FileManager::PATH_PREFIX, $module_name, $this->path_logic);
+     // $form_state->setRebuild(true);
       return $form['generator_container'];
     }
 
@@ -281,20 +293,16 @@ abstract class GenericGeneratorForm extends FormBase
     $module = $form_state->getTriggeringElement()['#options'][$form_state->getValue('module_integration')];
     $module_logic = $form_state->getTriggeringElement()['#options'][$form_state->getValue('module_integration_logic')];
 
-      // Re emplazando el nombre del módulo en las rutas de integración
-    $name_space_logic = $this->global_config->get('namespace_logic_' . $this->typeOfFile());
-    $path_logic = $this->global_config->get('fisic_dir_logic_' . $this->typeOfFile());
-
     if (isset($module)) {
 
-      $form['generator_container2']['integration']['name_space']['#value'] = str_replace(FileManager::PATH_PREFIX, $module, $name_space_logic);
-      $form['generator_container2']['integration']['path']['#value'] = str_replace(FileManager::PATH_PREFIX, $module, $path_logic);
+      $form['generator_container2']['integration']['name_space_integration']['#value'] = str_replace(FileManager::PATH_PREFIX, $module, $this->namespace_logic);
+      $form['generator_container2']['integration']['path_integration']['#value'] = str_replace(FileManager::PATH_PREFIX, $module, $this->path_logic);
     }
 
       // Re emplazando el nombre del módulo en las rutas reginales lógicas.
     if (isset($module_logic)) {
-      $form['generator_container2']['integration_logic']['name_space']['#value'] = str_replace(FileManager::PATH_PREFIX, $module_logic, $name_space_logic);
-      $form['generator_container2']['integration_logic']['path']['#value'] = str_replace(FileManager::PATH_PREFIX, $module_logic, $path_logic);
+      $form['generator_container2']['integration_logic']['name_space_integration_logic']['#value'] = str_replace(FileManager::PATH_PREFIX, $module_logic, $this->namespace_logic);
+      $form['generator_container2']['integration_logic']['path_integration_logic']['#value'] = str_replace(FileManager::PATH_PREFIX, $module_logic, $this->path_logic);
     }
 
     return $form['generator_container2'];
