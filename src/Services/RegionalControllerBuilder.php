@@ -86,7 +86,6 @@ class RegionalControllerBuilder
         $this->file_manager->createPath($path);
       }
       $dir_file = $path . '/' . $this->class . '.php';
-     // $dir_file = $dir_module . $dir_file;
     } else {
       $controller_generator->addNameSpace($namespace_logic);
       $code = $controller_generator->generateClass($this->logic_Class);
@@ -95,7 +94,6 @@ class RegionalControllerBuilder
         $this->file_manager->createPath($path);
       }
       $dir_file = $path . '/' . $this->logic_Class . '.php';
-     // $dir_file = $dir_module . $dir_file;
     }
     return $this->file_manager->saveFile($dir_file, "<?php \n \n" . $code);
   }
