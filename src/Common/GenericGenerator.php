@@ -16,13 +16,15 @@ class GenericGenerator
   protected $implement;
   protected $comment;
   protected $use;
+  /**
+   * @var \Drupal\bits_developer_tool\Common\FileManager
+   */
   private $file_manager;
   protected $property;
 
   public function __construct()
   {
     $this->method = [];
-    $this->extend = [];
     $this->comment = [];
     $this->use = [];
     $this->property = [];
@@ -34,26 +36,20 @@ class GenericGenerator
    *
    * @param string $name
    *  Nombre del método.
+   * @param string $body
+   *  Cuerpo del método.
    * @param array $comment
    *  Comentarios del método
    * @param array $arg
    *  Argumentos del método. Ejemplo "$arg = ['arg1','arg2','arg3'];" se traduce a "function ejemplo($arg1, $arg2, $arg3)".
-   * @param array $arg_default
-   *  Argumentos con valores por defecto. Ejemplo "$arg_default['name'] = 'nombre';" se traduce a "function ejemplo ($name = 'nombre')".
    * @return void
    */
-  public function addMethod($name, $comment = [], $arg = [], $arg_default = [])
+  public function addMethod($name,$body="", $comment = [], $arg = [])
   {
-    $method = new MethodGenerator($name);
-    foreach ($comment as $element) {
-      $method->addComment($element);
-    }
-    foreach ($arg_default as $key => $value) {
-      $method->addParameter($key, $value);
-    }
-    foreach ($arg as $elemnt) {
-      $method->addParameter($elemnt);
-    }
+    $method['name'] = $name;
+    $method['body'] = $body;
+    $method['comment'] = $comment;
+    $method['arg'] = $arg;
     array_push($this->method, $method);
   }
 
@@ -114,7 +110,7 @@ class GenericGenerator
    */
   public function addUse($use)
   {
-    $this->use = $use;
+    array_push($this->use ,$use);
   }
 
   /**
@@ -132,13 +128,14 @@ class GenericGenerator
    *  True si el atributo es estático.
    * @return void
    */
-  public function addClassProperty($name, $value = "", $is_literar = false, $visibility = 'private', $static = false)
+  public function addClassProperty($name,$comment="", $value = "", $is_literar = false, $visibility = 'private', $static = false)
   {
     $property['name'] = $name;
     $property['value'] = $value;
     $property['visibility'] = $visibility;
     $property['static'] = $static;
     $property['is_literar'] = $is_literar;
+    $property['comment'] = $comment;
     array_push($this->property, $property);
   }
 
@@ -154,12 +151,11 @@ class GenericGenerator
   {
 
     $namespace = new NameSpaceGenerator($this->namespace);
+    $class_generated = $namespace->addClass($class);
 
     foreach ($this->use as $element) {
       $namespace->addUse($element);
     }
-
-    $class_generated = $namespace->addClass($class);
 
     foreach ($this->comment as $comment) {
       $class_generated->addComment($comment);
@@ -174,24 +170,34 @@ class GenericGenerator
     }
 
     foreach ($this->property as $value) {
-
-      $class_generated->setVisibility($value['visibility']);
-
       if ($value['value'] !== "" && $value['is_literar']) {
-        $class_generated->addProperty($value['name'], new PhpLiteralGenerator($value['value']));
+        $property = $class_generated->addProperty($value['name'], new PhpLiteralGenerator($value['value']));
       } elseif ($value['value'] !== "") {
-        $class_generated->addProperty($value['name'], $value['value']);
+        $property =  $class_generated->addProperty($value['name'], $value['value']);
       } else {
-        $class_generated->addProperty($value['name']);
+        $property =   $class_generated->addProperty($value['name']);
       }
 
       if ($value['static']) {
-        $class_generated->setStatic();
+        $property->setStatic();
+      }
+      $property->setVisibility($value['visibility']);
+      if($value['comment']){
+        $property->addComment($value['comment']);
       }
     }
 
     foreach ($this->method as $value) {
-      $class_generated->addMethod($value);
+     $method = $class_generated->addMethod($value['name']);
+     if($value['body']){
+       $method->setBody($value['body']);
+     }
+     foreach ($value['comment'] as $comment) {
+      $method->addComment($comment);
+     }
+     foreach ($value['arg'] as $arg) {
+       $method->addParameter($arg);
+     }
     }
     return $namespace;
   }

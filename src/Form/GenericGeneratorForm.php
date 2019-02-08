@@ -11,6 +11,9 @@ use Drupal\bits_developer_tool\Common\TypeOfFile;
 abstract class GenericGeneratorForm extends FormBase
 {
   private $global_config;
+  /**
+   * @var \Drupal\bits_developer_tool\Common\NameSpacePathConfig
+   */
   private $namespace_path_config;
   private $namespace;
   private $namespace_logic;
