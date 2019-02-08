@@ -11,9 +11,11 @@
   - Integración a un clic.
 ## Dependencias
 Agregar al composer.json
+```json
  "require": {
         "nette/php-generator": "^3.2"
     }
+````    
 
 ![alt text](https://github.com/bitsalbertohernandez/bitscodegeneratror/blob/master/config/install/Capture4.PNG)
 ![alt text](https://github.com/bitsalbertohernandez/bitscodegeneratror/blob/master/config/install/Capture3.PNG)
