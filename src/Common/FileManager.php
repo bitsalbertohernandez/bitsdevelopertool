@@ -43,6 +43,8 @@ class FileManager
       }
     }
     $yaml_data = $this->yaml->dump($data_file, $level, 2);
+    $yaml_data = str_replace('{ ','[',$yaml_data);
+    $yaml_data = str_replace(' }',']',$yaml_data);
     return $this->saveFile($dir, $yaml_data);
   }
 
@@ -157,4 +159,25 @@ class FileManager
     return (bool)file_put_contents($dir_file, $data);
   }
 
+  /**
+   * Crear un directorio.
+   *
+   * @param string $path
+   *  Ruta del directorio.
+   * @return void
+   */
+  public function createPath($path){
+   return mkdir($path, 0770, true);
+  }
+
+  /**
+   * Saber si existe un directorio.
+   *
+   * @param string $path
+   *  Ruta del directorio.
+   * @return void
+   */
+  public function pathExist($path){
+     return file_exists($path);
+  }
 }
