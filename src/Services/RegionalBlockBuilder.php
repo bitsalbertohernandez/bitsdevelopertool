@@ -34,6 +34,10 @@ class RegionalBlockBuilder {
   
   private $container_interface = '\Symfony\Component\DependencyInjection\ContainerInterface';
   
+  private $interface = "Drupal\Core\Plugin\ContainerFactoryPluginInterface";
+  
+  private $interface_name = 'ContainerFactoryPluginInterface';
+  
   /**
    * @var \Drupal\bits_developer_tool\Common\FileManager
    */
@@ -72,10 +76,14 @@ class RegionalBlockBuilder {
   /**
    * Add Implements to a Class
    *
-   * @param $interface
    */
-  public function addImplementToClass($interface) {
-    $this->block_generator->addImplement($interface);
+  public function addImplementToClass() {
+    $namespace = str_replace(
+      FileManager::PATH_PREFIX, $this->module,
+      $this->namespace_path->getNameSpace(TypeOfFile::BLOCK)
+    );
+    $this->block_generator->addUse($this->interface);
+    $this->block_generator->addImplement($namespace . "\\" .  $this->interface_name);
   }
   
   /**
