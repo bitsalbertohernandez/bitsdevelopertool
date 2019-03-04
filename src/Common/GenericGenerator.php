@@ -98,7 +98,7 @@ class GenericGenerator
    */
   public function addClassComment($comment)
   {
-    array_push($this->comment, $coment);
+    array_push($this->comment, $comment);
   }
 
   /**

@@ -3,7 +3,7 @@ bits_developer_tool.general_config_form:
   path: '/admin/config/bits_developer_tool/generalconfig'
   defaults:
     _form: '\Drupal\bits_developer_tool\Form\GeneralConfigForm'
-    _title: 'GeneralConfigForm'
+    _title: 'Formulario para la Configuración General'
   requirements:
     _permission: 'access administration pages'
   options:
@@ -16,4 +16,14 @@ bits_developer_tool.general_g_form:
     _title: 'Ejemplo de form generator'
   requirements:
     _permission: 'access content'
+
+bits_developer_tool.generator_block_form:
+  path: '/generator-block-form'
+  defaults:
+    _form: '\Drupal\bits_developer_tool\Form\BlockGeneratorForm'
+    _title: 'Formulario para la Generación de Bloques'
+  requirements:
+    _permission: 'access content'
+  options:
+    _admin_route: TRUE
 
