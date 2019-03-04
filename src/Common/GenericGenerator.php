@@ -30,7 +30,7 @@ class GenericGenerator
     $this->property = [];
     $this->file_manager = \Drupal::service('bits_developer.file.manager');
   }
-
+  
   /**
    * Crear un método.
    *
@@ -43,13 +43,18 @@ class GenericGenerator
    * @param array $arg
    *  Argumentos del método. Ejemplo "$arg = ['arg1','arg2','arg3'];" se traduce a "function ejemplo($arg1, $arg2, $arg3)".
    * @return void
+   * @param string $type
+   *  Type of function. Ejemplo: static, final
+   *
+   * @return void
    */
-  public function addMethod($name,$body="", $comment = [], $arg = [])
+  public function addMethod($name, $body = "", $comment = [], $arg = [], $type = NULL)
   {
     $method['name'] = $name;
     $method['body'] = $body;
     $method['comment'] = $comment;
     $method['arg'] = $arg;
+    $method['type'] = $type;
     array_push($this->method, $method);
   }
 

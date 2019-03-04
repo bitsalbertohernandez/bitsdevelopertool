@@ -32,6 +32,8 @@ class RegionalBlockBuilder {
   
   private $plugin_definition_prop = '$plugin_definition';
   
+  private $container_interface = '\Symfony\Component\DependencyInjection\ContainerInterface';
+  
   /**
    * @var \Drupal\bits_developer_tool\Common\FileManager
    */
@@ -46,14 +48,6 @@ class RegionalBlockBuilder {
    * @var \Drupal\bits_developer_tool\Common\NameSpacePathConfig
    */
   private $namespace_path;
-  
-  /**
-   * Blocks class Comments with decorators.
-   *
-   * @var
-   */
-  protected $classComments;
-  
   
   /**
    * RegionalBlockBuilder constructor.
@@ -146,7 +140,29 @@ class RegionalBlockBuilder {
     ];
   }
   
-  private function generateBlockBaseClassBody() {
+  /**
+   * Array of Create Methods Block Comments
+   *
+   * @return array
+   */
+  private function createComments() {
+    $container = $this->container_interface . ' $container';
+    return [
+      "Create Block Class. \n",
+      "@param $container \n Block container.",
+      "@param array $this->configuration_prop \n Block configuration.",
+      "@param string $this->plugin_id_prop \n Plugin identification.",
+      "@param mixed $this->plugin_definition_prop \n Plugin definition.",
+      "\n\n@return static",
+    ];
+  }
+  
+  /**
+   * Generate Body of Contruct Block Base Class.
+   *
+   * @return string
+   */
+  private function generateContructBlockBaseClassBody() {
     $instance = "// Store our dependency. \n" . '$this->' . $this->regional_property . ' = $' . $this->regional_property;
     $parent = "\n\n// Call parent construct method. \n" . 'parent::__construct(' . $this->configuration_prop . ', ' . $this->plugin_id_prop . ', ' . $this->plugin_definition_prop . ');';
     $set_config = "\n\n// Set init config. \n" . '$this->configurationInstance->setConfig($this, $this->configuration);';
@@ -154,7 +170,33 @@ class RegionalBlockBuilder {
   }
   
   /**
-   * Array of Construct Block Arguments
+   * Genetate Body of Create Method Block Base Class.
+   *
+   * @return string
+   */
+  private function generateCreateBlockBaseClassBody() {
+    $ident = "'$this->identificator'";
+    $containter = '$container->get(' . $ident . ')';
+    return "return new static(\n  $this->configuration_prop,\n  $this->plugin_id_prop,\n  $this->plugin_definition_prop,\n  $containter\n);";
+  }
+  
+  /**
+   * Array of Create Arguments
+   *
+   * @return array
+   */
+  private function createArguments() {
+    
+    return [
+      ["container", $this->container_interface],
+      ["configuration", "array"],
+      ["plugin_id"],
+      ["plugin_definition"],
+    ];
+  }
+  
+  /**
+   * Array of Contruct Arguments
    *
    * @return array
    */
@@ -175,7 +217,6 @@ class RegionalBlockBuilder {
    */
   private function createBlockBase(&$block_generator, $namespace_logic) {
     $namespace = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::BLOCK));
-    $body = $this->generateBlockBaseClassBody();
     
     $block_generator->addUse($this->regional_use);
     $block_generator->addExtend($namespace . "\\" . $this->regional_extend);
@@ -183,12 +224,17 @@ class RegionalBlockBuilder {
     $block_generator->addClassProperty($this->regional_property, $this->regional_property_comment . "$namespace_logic\\$this->logic_Class", "", FALSE, 'protected');
     
     // Constructor code.
+    $bodyContruct = $this->generateContructBlockBaseClassBody();
     $block_generator->addMethod(
       '__construct',
-      $body,
+      $bodyContruct,
       $this->constructComments($namespace_logic . $this->logic_Class),
       $this->constructArguments($this->regional_property, $namespace_logic . $this->logic_Class)
     );
+    
+    // Create method code.
+    $bodyCreate = $this->generateCreateBlockBaseClassBody();
+    $create_method = $block_generator->addMethod('create', $bodyCreate, $this->createComments(), $this->createArguments(), 'static');
   }
   
   /**

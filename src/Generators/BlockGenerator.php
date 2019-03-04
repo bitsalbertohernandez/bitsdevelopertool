@@ -86,6 +86,15 @@ class BlockGenerator extends GenericGenerator {
     
     foreach ($this->method as $value) {
       $method = $class_generated->addMethod($value['name']);
+      
+      if (isset($value['type'])) {
+        if ($value['type'] == 'static') {
+          $method->setStatic();
+        }
+        if ($value['type'] == 'final') {
+          $method->setFinal();
+        }
+      }
       if ($value['body']) {
         $method->setBody($value['body']);
       }
