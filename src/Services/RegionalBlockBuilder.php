@@ -82,8 +82,9 @@ class RegionalBlockBuilder {
       FileManager::PATH_PREFIX, $this->module,
       $this->namespace_path->getNameSpace(TypeOfFile::BLOCK)
     );
+    
     $this->block_generator->addUse($this->interface);
-    $this->block_generator->addImplement($namespace . "\\" .  $this->interface_name);
+    $this->block_generator->addImplement($namespace . "\\" . $this->interface_name);
   }
   
   /**
@@ -196,10 +197,10 @@ class RegionalBlockBuilder {
   private function createArguments() {
     
     return [
-      ["container", $this->container_interface],
-      ["configuration", "array"],
-      ["plugin_id"],
-      ["plugin_definition"],
+      ["name" => "container", "type" => $this->container_interface],
+      ["name" => "configuration", "type" => "array"],
+      ["name" => "plugin_id"],
+      ["name" => "plugin_definition"],
     ];
   }
   
@@ -210,10 +211,10 @@ class RegionalBlockBuilder {
    */
   private function constructArguments($config_instance, $config_class) {
     return [
-      ["configuration", "array"],
-      ["plugin_id"],
-      ["plugin_definition"],
-      [$config_instance, $config_class],
+      ["name" => "configuration", "type" => "array"],
+      ["name" => "plugin_id"],
+      ["name" => "plugin_definition"],
+      ["name" => $config_instance, "type" => $config_class],
     ];
   }
   

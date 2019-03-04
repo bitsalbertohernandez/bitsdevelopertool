@@ -89,8 +89,6 @@ class BlockGeneratorForm extends GenericGeneratorForm {
       
       $admin_label = $form_state->getValue('admin_label');
       
-     
-      
       $module = $form['module']['#options'][$form_state->getValue('module')];
       
       $service_regional = $form_state->getValue('service_regional');
@@ -99,9 +97,9 @@ class BlockGeneratorForm extends GenericGeneratorForm {
       
       $builder_controller = \Drupal::service('bits_developer.reg-block.builder');
       $builder_controller->addClassComments($class_regional, $block_id, $admin_label);
-      $builder_controller->addImplementToClass();
       $builder_controller->addClass($class_regional);
       $builder_controller->addModule($module);
+      $builder_controller->addImplementToClass();
       $builder_controller->addIdentificator($service_regional);
       $builder_controller->addLogicClass($class_regional_logic);
       
