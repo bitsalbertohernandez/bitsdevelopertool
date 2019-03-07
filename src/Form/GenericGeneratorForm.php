@@ -49,7 +49,7 @@ abstract class GenericGeneratorForm extends FormBase
       '#type' => 'select',
       '#title' => $this->t('Módulo donde se generarán los archivos'),
       '#empty_value' => '',
-      '#empty_option' => '- Selecione módulo -',
+      '#empty_option' => '- Seleccione módulo -',
       '#options' => $module_list,
       '#states' => [
         'invisible' => [
@@ -169,7 +169,7 @@ abstract class GenericGeneratorForm extends FormBase
       '#type' => 'select',
       '#title' => $this->t('Módulo de la clase regional'),
       '#empty_value' => '',
-      '#empty_option' => '- Selecione módulo -',
+      '#empty_option' => '- Seleccione módulo -',
       '#options' => $module_list,
       '#ajax' => [
         'callback' => [$this, 'changeIntegrationConfig'],
@@ -216,7 +216,7 @@ abstract class GenericGeneratorForm extends FormBase
       '#type' => 'select',
       '#title' => $this->t('Módulo donde se generará la clases'),
       '#empty_value' => '',
-      '#empty_option' => '- Selecione módulo -',
+      '#empty_option' => '- Seleccione módulo -',
       '#options' => $module_list,
       '#ajax' => [
         'callback' => [$this, 'changeIntegrationConfig'],
