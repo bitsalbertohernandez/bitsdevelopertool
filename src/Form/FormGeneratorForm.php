@@ -54,8 +54,8 @@ class FormGeneratorForm extends GenericGeneratorForm
   public function buildForm(array $form, FormStateInterface $form_state) {
 
     $this->initConfigVar();
-
-    $module_list = \Drupal::service('bits_developer.util.operation')->listModule();
+    $util_service = \Drupal::service('bits_developer.util.operation');
+    $module_list = $util_service->listModule();
 
     // Checbox para saber si es integración.
     $form['only_logic'] = [
@@ -96,6 +96,7 @@ class FormGeneratorForm extends GenericGeneratorForm
       '#description' => t("Namespace del " . $this->className()),
       '#attributes' => ['readonly' => 'readonly'],
     ];
+
     $form['generator_container']['regional']['path_regional'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Directorio'),
@@ -103,18 +104,20 @@ class FormGeneratorForm extends GenericGeneratorForm
       '#description' => t("Directorio físico del " . $this->className()),
       '#attributes' => ['readonly' => 'readonly'],
     ];
+
+    $form['generator_container']['regional']['class_regional'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Nombre de la clase Formulario'),
+      '#default_value' => '',
+      '#description' => t("Nombre con el que se generará la clase Formulario."),
+      //'#required' => true
+    ];
+
     $form['generator_container']['regional']['service_regional'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Identificador del servicio'),
       '#default_value' => '',
-      '#description' => t("El identificador no debe contener espacios no caracteres extraños"),
-      //'#required' => true
-    ];
-    $form['generator_container']['regional']['class_regional'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Nombre de la clase'),
-      '#default_value' => '',
-      '#description' => t("Nombre con el que se generará la clase."),
+      '#description' => t("El identificador del servicio de la configuracion. Este valor no debe contener espacios ni caracteres extraños"),
       //'#required' => true
     ];
 
@@ -146,9 +149,9 @@ class FormGeneratorForm extends GenericGeneratorForm
     ];
     $form['generator_container']['regional_logic']['class_regional_logic'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Nombre de la clase'),
+      '#title' => $this->t('Nombre de la clase logica'),
       '#default_value' => '',
-      '#description' => t("Nombre con el que se generará la clase."),
+      '#description' => t("Nombre con el que se generará la clase logica."),
       //'#required' => true
     ];
 
@@ -162,6 +165,9 @@ class FormGeneratorForm extends GenericGeneratorForm
   }
 
   public function validateForm(array &$form, FormStateInterface $form_state) {
+    $module = $form_state->getValue('module');
+    if ($module == '')
+      $form_state->setErrorByName('module', $this->t('Debe seleccionar un modulo.'));
     $regional_service = $form_state->getValue('service_regional');
     if ( str_replace(' ','', $regional_service) != $regional_service) {
       $form_state->setErrorByName('service_regional', $this->t('El id del servicio no puede contener espacios en blanco.'));
@@ -177,5 +183,19 @@ class FormGeneratorForm extends GenericGeneratorForm
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
 
+    $class_regional = $form_state->getValue('class_regional');
+
+    $module = $form['module']['#options'][$form_state->getValue('module')];
+
+    $service_regional = $form_state->getValue('service_regional');
+
+    $class_regional_logic = $form_state->getValue('class_regional_logic');
+    $builder_controller = \Drupal::service('bits_developer.reg-form.builder');
+    $builder_controller->addClass($class_regional);
+    $builder_controller->addModule($module);
+    $builder_controller->addIdentificator($service_regional);
+    $builder_controller->addLogicClass($class_regional_logic);
+    $success = $builder_controller->buildFiles();
+    drupal_set_message($success?t('Operacion realizada con exito'):t('Fallo la operacion'));
   }
 }

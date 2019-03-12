@@ -27,6 +27,14 @@ services:
     class: Drupal\bits_developer_tool\Generators\BlockGenerator
     argument: []
 
+  bits_developer.form.generator:
+    class: Drupal\bits_developer_tool\Generators\FormGenerator
+    argument: []
+
   bits_developer.reg-block.builder:
     class: Drupal\bits_developer_tool\Services\RegionalBlockBuilder
+    argument: []
+
+  bits_developer.reg-form.builder:
+    class: Drupal\bits_developer_tool\Services\RegionalFormBuilder
     argument: []
