@@ -23,6 +23,8 @@ class RegionalFormBuilder {
   private $regional_extend = "FormBase";
   
   private $regional_property = "logic_instance";
+
+  private $form_instance = 'instance';
   
   private $regional_property_comment = '@var \\';
   
@@ -168,6 +170,17 @@ class RegionalFormBuilder {
     return $instance  . $set_config;
   }
 
+  /**
+   * Generate Body of Function Form Base Class.
+   *
+   * @return string
+   */
+  private function generateFunctionFormClassBody($function) {
+    $if = "if (method_exists(".'$this->'."$this->regional_property, "."'$function'".")) {\n";
+    $body = '    $this->'."$this->regional_property->$function(".'$'."form, ".'$'."form_state); \n}";
+    return $if  . $body;
+  }
+
 
   /**
    * Generate body of method getFormId.
@@ -252,10 +265,10 @@ class RegionalFormBuilder {
       $this->constructComments($namespace_logic ."\\". $this->logic_Class),
       $this->constructArguments($this->regional_property, $namespace_logic ."\\". $this->logic_Class)
     );
-    $form_generator->addMethod('getFormId',$this->generateGetFormIdBody());
-    $form_generator->addMethod('buildForm', "", [], $this->functionArguments('buildForm'));
-    $form_generator->addMethod('submitForm', "", [], $this->functionArguments('submitForm'));
-    $form_generator->addMethod('validateForm', "", [], $this->functionArguments('validateForm'));
+    $form_generator->addMethod('getFormId', $this->generateGetFormIdBody());
+    $form_generator->addMethod('buildForm', $this->generateFunctionFormClassBody('buildForm'), [], $this->functionArguments('buildForm'));
+    $form_generator->addMethod('submitForm', $this->generateFunctionFormClassBody('submitForm'), [], $this->functionArguments('submitForm'));
+    $form_generator->addMethod('validateForm', $this->generateFunctionFormClassBody('validateForm'), [], $this->functionArguments('validateForm'));
   }
   
   /**
@@ -267,19 +280,42 @@ class RegionalFormBuilder {
   private function createFormClassLogic(&$form_generator, $namespace_logic) {
     $form_generator = new FormGenerator();
     $form_generator->addNameSpace($namespace_logic);
+    $namespace = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::FORM));
+    $form_generator->addUse($namespace."\\".$this->class);
+    $form_generator->addClassProperty($this->form_instance, "", "", FALSE, 'protected');
+
+
   }
   
   /**
-   * Generate Path And Code in Base And Logic Class.
+   * Generate Path And Code in Base Class.
    *
    * @param $form_generator
    * @param $class
    *
    * @return array
    */
-  private function generatePathAndCode($form_generator, $class) {
+  private function generatePathAndCodeBase($form_generator, $class) {
     $code = $form_generator->generateClass($class);
     $path = $this->file_manager->modulePath($this->module) . str_replace(FileManager::PATH_PREFIX, '', $this->namespace_path->getPath(TypeOfFile::FORM));
+    if (!$this->file_manager->pathExist($path)) {
+      $this->file_manager->createPath($path);
+    }
+    $dir_file = $path . '/' . $class . '.php';
+    return ['code' => $code, 'dir_file' => $dir_file];
+  }
+
+  /**
+   * Generate Path And Code in Logic Class.
+   *
+   * @param $form_generator
+   * @param $class
+   *
+   * @return array
+   */
+  private function generatePathAndCodeLogicClass($form_generator, $class) {
+    $code = $form_generator->generateClass($class);
+    $path = $this->file_manager->modulePath($this->module) . str_replace(FileManager::PATH_PREFIX, '', $this->namespace_path->getPathLogic(TypeOfFile::FORM));
     if (!$this->file_manager->pathExist($path)) {
       $this->file_manager->createPath($path);
     }
@@ -303,7 +339,7 @@ class RegionalFormBuilder {
     $dir_file = "";
     $dir_module = $this->file_manager->modulePath($this->module, $dir_file);
     $this->createFormBase($form_generator, $namespace_logic);
-    $path_code = $this->generatePathAndCode($form_generator, $this->class);
+    $path_code = $this->generatePathAndCodeBase($form_generator, $this->class);
     $code = $path_code['code'];
     $dir_file = $path_code['dir_file'];
     return $this->file_manager->saveFile($dir_file, "<?php \n \n" . $code);
@@ -325,7 +361,7 @@ class RegionalFormBuilder {
     $dir_file = "";
     $dir_module = $this->file_manager->modulePath($this->module, $dir_file);
     $this->createFormClassLogic($form_generator, $namespace_logic);
-    $path_code = $this->generatePathAndCode($form_generator, $this->logic_Class);
+    $path_code = $this->generatePathAndCodeLogicClass($form_generator, $this->logic_Class);
     $code = $path_code['code'];
     $dir_file = $path_code['dir_file'];
     return $this->file_manager->saveFile($dir_file, "<?php \n \n" . $code);
