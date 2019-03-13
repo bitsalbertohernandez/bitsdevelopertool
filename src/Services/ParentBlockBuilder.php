@@ -33,6 +33,8 @@ class ParentBlockBuilder {
 
   protected $container_interface = '\Symfony\Component\DependencyInjection\ContainerInterface';
 
+  protected $container_name = 'ContainerInterface';
+
   protected $interface = "Drupal\Core\Plugin\ContainerFactoryPluginInterface";
 
   protected $interface_name = 'ContainerFactoryPluginInterface';

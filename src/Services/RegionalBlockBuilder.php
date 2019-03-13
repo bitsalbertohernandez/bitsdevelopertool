@@ -57,10 +57,12 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
    * @return array
    */
   private function createComments() {
+    $namespace = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::BLOCK));
+    $this->block_generator->addUse($this->container_interface);
     $container = $this->container_interface . ' $container';
     return [
       "Create Block Class. \n",
-      "@param $container \n Block container.",
+      "@param $namespace\\$this->container_name \n Block container.",
       "@param array $this->configuration_prop \n Block configuration.",
       "@param string $this->plugin_id_prop \n Plugin identification.",
       "@param mixed $this->plugin_definition_prop \n Plugin definition.",
@@ -111,7 +113,8 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
    *
    * @return array
    */
-  private function constructArguments($config_instance, $config_class) {
+  private function constructArguments($config_instance, $config_class, $namespace_logic) {
+    $this->block_generator->addUse($namespace_logic . "\\" . $this->logic_Class);
     return [
       ["name" => "configuration", "type" => "array"],
       ["name" => "plugin_id"],
@@ -136,11 +139,12 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
 
     // Constructor code.
     $bodyContruct = $this->generateContructBlockBaseClassBody();
+
     $block_generator->addMethod(
       '__construct',
       $bodyContruct,
-      $this->constructComments($namespace_logic . $this->logic_Class),
-      $this->constructArguments($this->regional_property, $namespace_logic . $this->logic_Class)
+      $this->constructComments($namespace_logic . "\\" . $this->logic_Class),
+      $this->constructArguments($this->regional_property, $namespace . "\\" . $this->logic_Class, $namespace_logic)
     );
 
     // Create method code.
@@ -217,5 +221,4 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
     }
     return $this->file_manager->saveFile($dir_file, "<?php \n \n" . $code);
   }
-
 }
