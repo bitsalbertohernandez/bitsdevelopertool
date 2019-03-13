@@ -153,8 +153,36 @@ class RegionalFormBuilder {
     $configuration_instance = "$" . $this->regional_property;
     return [
       "Contructor Form Class. \n",
-      "@param $namespace $configuration_instance \n Logic class of form.",
+      "@param \\$namespace $configuration_instance \n Logic class of form.",
     ];
+  }
+
+  /**
+   * Array of getFormId Method Form Comments
+   *
+   * @return array
+   */
+  private function getFormIdComments() {
+    return [
+      "getFormId Method Form Class. \n",
+      "@return string \n identification string of form.",
+    ];
+  }
+
+  /**
+   * Array of buildForm Method Form Comments
+   *
+   * @return array
+   */
+  private function functionsFormBaseComments($function, $arguments) {
+    $comments = [];
+    $comments = ["$function Method Form Class. \n"];
+    foreach ($arguments as $param) {
+      $type = $param["type"];
+      $name = $param["name"];
+      array_push($comments, "@param \\$type $name \n");
+    }
+    return $comments;
   }
   
 
@@ -166,7 +194,7 @@ class RegionalFormBuilder {
    */
   private function generateContructFormBaseClassBody() {
     $instance = "// Store our dependency. \n" . '$this->' . $this->regional_property . ' = $' . $this->regional_property.';';
-    $set_config = "\n\n\n" . '$this->'.$this->regional_property.'->createInstance($this);';
+    $set_config = "\n" . '$this->'.$this->regional_property.'->createInstance($this);';
     return $instance  . $set_config;
   }
 
@@ -181,15 +209,36 @@ class RegionalFormBuilder {
     return $if  . $body;
   }
 
+  /**
+   * Generate Body of Function createInstance.
+   *
+   * @return string
+   */
+  private function generateCreateInstanceBodyFormClass($params) {
+
+    $body = '    $this->'."$this->form_instance".' = &$'."$params;";
+    return  $body;
+  }
+
 
   /**
    * Generate body of method getFormId.
    *
    * @return string
    */
-  private function generateGetFormIdBody() {
+  private function generateGetFormIdBodyFormBase() {
 
     return '$this->'."$this->regional_property->getFormId();";
+  }
+
+  /**
+   * Generate body of method getFormId.
+   *
+   * @return string
+   */
+  private function generateGetFormIdBodyLogicClass() {
+
+    return "return '$this->form_id';";
   }
   
 //  /**
@@ -216,6 +265,11 @@ class RegionalFormBuilder {
     ];
   }
 
+  private function createInstanceArguments($formBaseClass) {
+    return [
+      ["name" => "form", "type" => $formBaseClass, "reference" => true],
+    ];
+  }
   /**
    * Array of Arguments
    *
@@ -265,10 +319,16 @@ class RegionalFormBuilder {
       $this->constructComments($namespace_logic ."\\". $this->logic_Class),
       $this->constructArguments($this->regional_property, $namespace_logic ."\\". $this->logic_Class)
     );
-    $form_generator->addMethod('getFormId', $this->generateGetFormIdBody());
-    $form_generator->addMethod('buildForm', $this->generateFunctionFormClassBody('buildForm'), [], $this->functionArguments('buildForm'));
-    $form_generator->addMethod('submitForm', $this->generateFunctionFormClassBody('submitForm'), [], $this->functionArguments('submitForm'));
-    $form_generator->addMethod('validateForm', $this->generateFunctionFormClassBody('validateForm'), [], $this->functionArguments('validateForm'));
+    $form_generator->addMethod('getFormId', $this->generateGetFormIdBodyFormBase(), $this->getFormIdComments());
+
+    $buildFormArguments = $this->functionArguments('buildForm');
+    $form_generator->addMethod('buildForm', $this->generateFunctionFormClassBody('buildForm'), $this->functionsFormBaseComments('buildForm' ,$buildFormArguments),$buildFormArguments );
+
+    $submitFormArgument = $this->functionArguments('submitForm');
+    $form_generator->addMethod('submitForm', $this->generateFunctionFormClassBody('submitForm'), $this->functionsFormBaseComments('submitForm', $submitFormArgument), $submitFormArgument);
+
+    $validateFormArgument = $this->functionArguments('validateForm');
+    $form_generator->addMethod('validateForm', $this->generateFunctionFormClassBody('validateForm'), $this->functionsFormBaseComments('validateForm', $validateFormArgument), $validateFormArgument);
   }
   
   /**
@@ -280,9 +340,16 @@ class RegionalFormBuilder {
   private function createFormClassLogic(&$form_generator, $namespace_logic) {
     $form_generator = new FormGenerator();
     $form_generator->addNameSpace($namespace_logic);
+    $form_generator->addUse('Drupal\Core\Form\FormBase');
+    $form_generator->addUse('Drupal\Core\Form\FormStateInterface');
     $namespace = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::FORM));
     $form_generator->addUse($namespace."\\".$this->class);
     $form_generator->addClassProperty($this->form_instance, "", "", FALSE, 'protected');
+    $form_generator->addMethod('createInstance',$this->generateCreateInstanceBodyFormClass('form'),[],$this->createInstanceArguments($namespace."\\".$this->class));
+    $form_generator->addMethod('getFormId',$this->generateGetFormIdBodyLogicClass(),[],[]);
+    $form_generator->addMethod('buildForm', "", [], $this->functionArguments('buildForm'));
+    $form_generator->addMethod('submitForm', "", [], $this->functionArguments('submitForm'));
+    $form_generator->addMethod('validateForm', "", [], $this->functionArguments('validateForm'));
 
 
   }

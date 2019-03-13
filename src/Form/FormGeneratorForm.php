@@ -105,6 +105,13 @@ class FormGeneratorForm extends GenericGeneratorForm
       '#attributes' => ['readonly' => 'readonly'],
     ];
 
+    $form['generator_container']['regional']['formId'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Identificacion del Formulario'),
+      '#default_value' => '',
+      '#description' => t('Cadena de caracteres que identifica a la clase Formulario'),
+    ];
+
     $form['generator_container']['regional']['class_regional'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Nombre de la clase Formulario'),
@@ -165,6 +172,9 @@ class FormGeneratorForm extends GenericGeneratorForm
   }
 
   public function validateForm(array &$form, FormStateInterface $form_state) {
+    $form_id = $form_state->getValue('formId');
+    if ($form_id == '')
+      $form_state->setErrorByName('$formId', $this->t('Debe un identificador para el formulario.'));
     $module = $form_state->getValue('module');
     if ($module == '')
       $form_state->setErrorByName('module', $this->t('Debe seleccionar un modulo.'));
@@ -189,9 +199,12 @@ class FormGeneratorForm extends GenericGeneratorForm
 
     $service_regional = $form_state->getValue('service_regional');
 
+    $form_id = $form_state->getValue('formId');
+
     $class_regional_logic = $form_state->getValue('class_regional_logic');
     $builder_controller = \Drupal::service('bits_developer.reg-form.builder');
     $builder_controller->addClass($class_regional);
+    $builder_controller->setFormId($form_id);
     $builder_controller->addModule($module);
     $builder_controller->addIdentificator($service_regional);
     $builder_controller->addLogicClass($class_regional_logic);
