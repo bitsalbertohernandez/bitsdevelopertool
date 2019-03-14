@@ -38,3 +38,7 @@ services:
   bits_developer.reg-form.builder:
     class: Drupal\bits_developer_tool\Services\RegionalFormBuilder
     argument: []
+
+  bits_developer.int-form.builder:
+    class: Drupal\bits_developer_tool\Services\IntegrationFormBuilder
+    argument: []
