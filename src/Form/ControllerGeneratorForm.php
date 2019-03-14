@@ -22,6 +22,12 @@ class ControllerGeneratorForm extends GenericGeneratorForm {
     return TypeOfFile::CONTROLLER;
   }
 
+  public function buildForm(array $form, FormStateInterface $form_state) {
+    $form = parent::buildForm($form, $form_state);
+    unset($form['generator_container2']['integration']['service_integration']);
+    return $form;
+  }
+
   public function submitForm(array &$form, FormStateInterface $form_state) {
 
     if ($form_state->getValue('only_logic') == 0) {
@@ -43,6 +49,7 @@ class ControllerGeneratorForm extends GenericGeneratorForm {
       $builder_controller->buildFiles();
     }
     else{
+
       $module = $form['generator_container2']['integration']['module_integration']['#options'][$form_state->getValue('module_integration')];
       $logic_module = $form['generator_container2']['integration_logic']['module_integration_logic']['#options'][$form_state->getValue('module_integration_logic')];
 
