@@ -22,3 +22,11 @@ services:
   bits_developer.int-controller.builder:
     class: Drupal\bits_developer_tool\Services\IntegrationControllerBuilder
     argument: []
+
+  bits_developer.block.generator:
+    class: Drupal\bits_developer_tool\Generators\BlockGenerator
+    argument: []
+
+  bits_developer.reg-block.builder:
+    class: Drupal\bits_developer_tool\Services\RegionalBlockBuilder
+    argument: []
