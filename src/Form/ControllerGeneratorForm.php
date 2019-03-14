@@ -50,16 +50,19 @@ class ControllerGeneratorForm extends GenericGeneratorForm
       $builder_controller->buildFiles();
     }
     else{
+      $builder_controller = \Drupal::service( 'bits_developer.int-controller.builder');
+
       $module = $form['generator_container2']['integration']['module_integration']['#options'][$form_state->getValue('module_integration')];
       $logic_module = $form['generator_container2']['integration_logic']['module_integration_logic']['#options'][$form_state->getValue('module_integration_logic')];
 
       $class = $form_state->getValue('class_integration');
       $logic_class = $form_state->getValue('class_integration_logic');
+
       $builder_controller = \Drupal::service('bits_developer.int-controller.builder');
-      $builder_controller->addClass($class);
-      $builder_controller->addLogicClass($logic_class);
-      $builder_controller->addModule($module);
-      $builder_controller->addLogicModule($logic_module);
+      $builder_controller->addClass($logic_class);
+      $builder_controller-> addRegionalClass($class);
+      $builder_controller->addModule($logic_module);
+      $builder_controller->addRegionalModule($module);
       $builder_controller->buildFiles();
       }
   }
