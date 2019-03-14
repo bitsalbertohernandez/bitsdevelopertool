@@ -5,8 +5,7 @@ use Drupal\bits_developer_tool\Common\FileManager;
 use Drupal\bits_developer_tool\Common\TypeOfFile;
 use Drupal\bits_developer_tool\Common\YAMLType;
 use Drupal\bits_developer_tool\Generators\ControllerGenerator;
-class RegionalControllerBuilder extends ControllerBuilder
-{
+class RegionalControllerBuilder extends ControllerBuilder {
   private $identificator;
   private $logic_class;
   private $regional_use = "Drupal\Core\Controller\ControllerBase";
@@ -14,26 +13,22 @@ class RegionalControllerBuilder extends ControllerBuilder
   private $regional_property = "configuration_instance";
   private $regional_property_comment = '@var \\';
 
-
-  public function addIdentificator($identificator)
-  {
+  public function addIdentificator($identificator) {
     $this->identificator = $identificator;
   }
-  public function addLogicClass($logic_class)
-  {
+
+  public function addLogicClass($logic_class) {
     $this->logic_class = $logic_class;
   }
 
-  public function buildFiles()
-  {
+  public function buildFiles() {
     if ($this->generateControllerClass()) {
       $this->generateYAMLConfig();
       $this->generateControllerLogicClass();
     }
   }
 
-  private function generateControllerClass()
-  {
+  private function generateControllerClass() {
     $controller_generator = new ControllerGenerator();
     $namespace_logic = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpaceLogic(TypeOfFile::CONTROLLER));
     $code = "";
@@ -58,8 +53,7 @@ class RegionalControllerBuilder extends ControllerBuilder
     return $this->file_manager->saveFile($dir_file, "<?php \n \n" . $code);
   }
 
-  private function generateControllerLogicClass()
-  {
+  private function generateControllerLogicClass() {
     $controller_generator = new ControllerGenerator();
     $namespace_logic = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpaceLogic(TypeOfFile::CONTROLLER));
 
@@ -75,12 +69,15 @@ class RegionalControllerBuilder extends ControllerBuilder
 
     return $this->file_manager->saveFile($dir_file, "<?php \n \n" . $code);
   }
-  private function generateYAMLConfig()
-  {
+
+  private function generateYAMLConfig() {
     $class = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpaceLogic(TypeOfFile::CONTROLLER)) . '\\' . $this->logic_class;
+
     $data[$this->identificator]['class'] = $class;
     $data[$this->identificator]['arguments'] = [];
+
     $yaml_dir = $this->file_manager->getYAMLPath($this->module, YAMLType::SERVICES_FILE);
+
     return $this->file_manager->saveYAMLConfig($yaml_dir, $data, YAMLType::SERVICES_FILE);
   }
 }

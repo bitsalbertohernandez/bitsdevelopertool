@@ -5,25 +5,25 @@ use Drupal\bits_developer_tool\Common\FileManager;
 use Drupal\bits_developer_tool\Common\TypeOfFile;
 use Drupal\bits_developer_tool\Generators\ControllerGenerator;
 
-class IntegrationControllerBuilder extends ControllerBuilder
-{
+class IntegrationControllerBuilder extends ControllerBuilder {
+
   private $regional_module;
   private $regional_class;
-  public function addRegionalModule( $regional_module)
-  {
+
+  public function addRegionalModule( $regional_module) {
     $this->regional_module = $regional_module;
   }
-  public function addRegionalClass( $regional_class)
-  {
+
+  public function addRegionalClass( $regional_class) {
     $this-> regional_class = $regional_class;
   }
-  public function buildFiles()
-  {
+
+  public function buildFiles() {
     $this->generateControllerLogicClass();
   }
 
-  private function generateControllerLogicClass()
-  {
+  private function generateControllerLogicClass() {
+
     $controller_generator = new ControllerGenerator();
     $code = "";
 
