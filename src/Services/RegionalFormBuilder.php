@@ -17,9 +17,7 @@ class RegionalFormBuilder {
   private $identificator;
   
   private $logic_Class;
-  
-  private $regional_use = 'use Drupal\Core\Form\FormStateInterface; \n use Drupal\tbo_billing\Form\BillingPaymentSettings;';
-  
+
   private $regional_extend = "FormBase";
   
   private $regional_property = "logic_instance";
@@ -27,12 +25,8 @@ class RegionalFormBuilder {
   private $form_instance = 'instance';
   
   private $regional_property_comment = '@var \\';
-  
-  private $configuration_prop = '$configuration';
 
   private $form_id;
-  
-  private $container_interface = '\Symfony\Component\DependencyInjection\ContainerInterface';
   
   private $interface = "Drupal\Core\Plugin\ContainerFactoryPluginInterface";
   
@@ -215,7 +209,6 @@ class RegionalFormBuilder {
    * @return string
    */
   private function generateCreateInstanceBodyFormClass($params) {
-
     $body = '    $this->'."$this->form_instance".' = &$'."$params;";
     return  $body;
   }
@@ -227,7 +220,6 @@ class RegionalFormBuilder {
    * @return string
    */
   private function generateGetFormIdBodyFormBase() {
-
     return '$this->'."$this->regional_property->getFormId();";
   }
 
@@ -237,23 +229,9 @@ class RegionalFormBuilder {
    * @return string
    */
   private function generateGetFormIdBodyLogicClass() {
-
     return "return '$this->form_id';";
   }
-  
-//  /**
-//   * Array of Create Arguments
-//   *
-//   * @return array
-//   */
-//  private function createArguments() {
-//
-//    return [
-//      ["name" => "container", "type" => $this->container_interface],
-//      ["name" => "configuration", "type" => "array"],
-//    ];
-//  }
-  
+
   /**
    * Array of Contruct Arguments
    *

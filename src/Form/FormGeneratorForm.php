@@ -41,203 +41,12 @@ class FormGeneratorForm extends GenericGeneratorForm
   {
     return TypeOfFile::FORM;
   }
-/*
-  private function initConfigVar() {
-    $this->global_config = \Drupal::config(FileManager::ID_CONFIG);
 
-    $this->namespace_path_config = \Drupal::service('bits_developer.namespace.path');
-
-    $this->namespace = $this->namespace_path_config->getNameSpace($this->typeOfFile());
-    $this->path = $this->namespace_path_config->getPath($this->typeOfFile());
-
-    $this->namespace_logic = $this->namespace_path_config->getNameSpaceLogic($this->typeOfFile());
-    $this->path_logic = $this->namespace_path_config->getPathLogic($this->typeOfFile());
-    $this->file_manager = \Drupal::service('bits_developer.file.manager');
-  }
-
-  public function buildForm(array $form, FormStateInterface $form_state) {
-
-    $this->initConfigVar();
-    $util_service = \Drupal::service('bits_developer.util.operation');
-    $module_list = $util_service->listModule();
-
-    // Checbox para saber si es integración.
-    $form['only_logic'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Generar integración'),
-    ];
-
-    // Select de módulos.
-    $form['module'] = [
-      '#type' => 'select',
-      '#title' => $this->t('Módulo donde se generarán los archivos'),
-      '#empty_value' => '',
-      '#empty_option' => '- Selecione módulo -',
-      '#options' => $module_list,
-      '#states' => [
-        'invisible' => [
-          ':input[name="only_logic"]' => ['checked' => true],
-        ],
-      ],
-    ];
-
-    // Tablas de las clases bases de REGIONAL!!!!.
-    $form['generator_container']['regional'] = [
-      '#type' => 'details',
-      '#title' => t('Definir ' . $this->className()),
-      '#open' => true,
-      '#states' => [
-        'invisible' => [
-          ':input[name="only_logic"]' => ['checked' => true],
-        ],
-      ],
-    ];
-
-    $form['generator_container']['regional']['name_space_regional'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Namespace'),
-      '#default_value' => $this->namespace,
-      '#description' => t("Namespace del " . $this->className()),
-      '#attributes' => ['readonly' => 'readonly'],
-    ];
-
-    $form['generator_container']['regional']['path_regional'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Directorio'),
-      '#default_value' => $this->path,
-      '#description' => t("Directorio físico del " . $this->className()),
-      '#attributes' => ['readonly' => 'readonly'],
-    ];
-
-    $form['generator_container']['regional']['formId'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Identificacion del Formulario'),
-      '#default_value' => '',
-      '#description' => t('Cadena de caracteres que identifica a la clase Formulario'),
-    ];
-
-    $form['generator_container']['regional']['class_regional'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Nombre de la clase Formulario'),
-      '#default_value' => '',
-      '#description' => t("Nombre con el que se generará la clase Formulario."),
-      //'#required' => true
-    ];
-
-    $form['generator_container']['regional']['service_regional'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Identificador del servicio'),
-      '#default_value' => '',
-      '#description' => t("El identificador del servicio de la configuracion. Este valor no debe contener espacios ni caracteres extraños"),
-      //'#required' => true
-    ];
-
-    // Tabla de las clases lógicas regionales.
-    $form['generator_container']['regional_logic'] = [
-      '#type' => 'details',
-      '#title' => t('Definir lógica del ' . $this->className()),
-      '#open' => true,
-      '#states' => [
-        'invisible' => [
-          ':input[name="only_logic"]' => ['checked' => true],
-        ],
-      ],
-    ];
-
-    $form['generator_container']['regional_logic']['name_space_regional_logic'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Namespace'),
-      '#default_value' => $this->namespace_logic,
-      '#description' => "Namespace de la clase lógica del " . $this->className(),
-      '#attributes' => ['readonly' => 'readonly'],
-    ];
-    $form['generator_container']['regional_logic']['path_regional_logic'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Directorio'),
-      '#default_value' => $this->path_logic,
-      '#description' => "Directorio físico de la clase lógica del " . $this->className(),
-      '#attributes' => ['readonly' => 'readonly'],
-    ];
-    $form['generator_container']['regional_logic']['class_regional_logic'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Nombre de la clase logica'),
-      '#default_value' => '',
-      '#description' => t("Nombre con el que se generará la clase logica."),
-      //'#required' => true
-    ];
-
-    // Tablas de las clases bases de INTEGRACION!!!!.
-
-
-
-    $form['generator_container']['integration'] = [
-      '#type' => 'details',
-      '#title' => t('Definir ' . $this->className()),
-      '#open' => true,
-      '#states' => [
-        'invisible' => [
-          ':input[name="only_logic"]' => ['checked' => false],
-        ],
-      ],
-    ];
-
-    $list = $util_service->listModuleByPackage('BITS');
-    $form['generator_container']['integration']['module_integration'] = [
-      '#type' => 'select',
-      '#title' => $this->t('Modulo regional para realizar la integracion'),
-      '#empty_value' => '',
-      '#empty_option' => '- Selecione el modulo -',
-      '#options' => $list,
-      '#states' => [
-        'invisible' => [
-          ':input[name="only_logic"]' => ['checked' => false],
-        ],
-      ],
-    ];
-
-    $form['generator_container']['integration']['class_integration'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Nombre de la clase Logica del Formulario'),
-      '#default_value' => '',
-      '#description' => t("Nombre de la clase Logica del Formulario."),
-      //'#required' => true
-    ];
-
-    $list = $util_service->listModuleByPackage('BITS');
-    $form['generator_container']['integration']['module_imp'] = [
-      '#type' => 'select',
-      '#title' => $this->t('Modulo regional para realizar la integracion'),
-      '#empty_value' => '',
-      '#empty_option' => '- Selecione el modulo -',
-      '#options' => $list,
-      '#states' => [
-        'invisible' => [
-          ':input[name="only_logic"]' => ['checked' => false],
-        ],
-      ],
-    ];
-    $form['generator_container']['integration']['class_specific_logic'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Nombre de la clase logica integrada'),
-      '#default_value' => '',
-      '#description' => t("Nombre con el que se generará la clase logica integrada."),
-      //'#required' => true
-    ];
-
-    // Boton para generar las clases.
-    $form['actions'] = [
-      '#type' => 'submit',
-      '#value' => $this->t('Generar'),
-    ];
-
-    return $form;
-  }
-*/
   public function validateForm(array &$form, FormStateInterface $form_state) {
     if ($form_state->getValue('only_logic') == 0)
       $this->validateRegionalInputs($form_state);
     else {
-     // $this->validateIntegrationInput($form, $form_state);
+      $this->validateIntegrationInput($form, $form_state);
     }
 
   }
@@ -247,10 +56,32 @@ class FormGeneratorForm extends GenericGeneratorForm
     if ($form_state->getValue('only_logic') == 0)
       $this->generateRegionalClasses($form, $form_state);
     else {
-     // ksm($form_state->getValue('only_logic'));
-      $module_int = $form['generator_container']['integration']['module_integration']['#options'][$form_state->getValue('module_integration')];
+      $methods = [];
       $class_integration = $form_state->getValue('class_integration');
-      ksm( $this->file_manager->getNamespace($module_int,TypeOfFile::FORM,$class_integration));
+      $module_int = $module = $form['generator_container2']['integration']['module_integration']['#options'][$form_state->getValue('module_integration')];;
+      $module_imp = $form['generator_container2']['integration_logic']['module_integration_logic']['#options'][$form_state->getValue('module_integration_logic')];
+      $class_specific_logic = $form_state->getValue('class_integration_logic');
+      $service_int = $form_state->getValue('service_integration');
+      $form_class = $form_state->getValue('form_class');
+      if ($form_state->getValue('submit_method_integration_logic') == true)
+        $methods[] = 'submitForm';
+      if ($form_state->getValue('build_method_integration_logic') == true)
+        $methods[] = 'buildForm';
+      if ($form_state->getValue('validate_method_integration_logic') == true)
+        $methods[] = 'validateForm';
+      //ksm($methods);
+      $builder_controller = \Drupal::service('bits_developer.int-form.builder');
+      $builder_controller->addFormClass($form_class);
+      $builder_controller->addLogicClass($class_specific_logic);
+      $builder_controller->addModuleInt($module_int);
+      $builder_controller->addModuleImpl($module_imp);
+      $builder_controller->setIntegrationClass($class_integration);
+      $builder_controller->setMethodImpl($methods);
+      $success = $builder_controller->buildFiles();
+      drupal_set_message($success?t('Operacion realizada con exito'):t('Fallo la operacion'));
+
+
+      //ksm( $this->file_manager->getNamespace($module_int,TypeOfFile::FORM,$class_integration));
 
     }
   }
@@ -263,6 +94,37 @@ class FormGeneratorForm extends GenericGeneratorForm
       '#default_value' => '',
       '#description' => t("El identificador no debe contener espacios no caracteres extraños"),
       //'#required' => true
+    ];
+    $form['generator_container2']['integration']['form_class'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Nombre de la clase Formulario'),
+      '#default_value' => '',
+      '#description' => t("Clase formulario que instancia la clase logica seleccionada"),
+      //'#required' => true
+    ];
+    $form['generator_container2']['integration_logic']['submit_method_integration_logic'] = [
+      '#type' => 'checkbox',
+      '#title' => t('Function submitForm'),
+      '#size' => 10,
+      '#maxlength' => 255,
+      '#default_value' => 1,
+      '#description' => '<p>' . t('Se declarara la function en la clase.') . '</p>',
+    ];
+    $form['generator_container2']['integration_logic']['build_method_integration_logic'] = [
+      '#type' => 'checkbox',
+      '#title' => t('Function buildForm'),
+      '#size' => 10,
+      '#maxlength' => 255,
+      '#default_value' => 1,
+      '#description' => '<p>' . t('Se declarara la function en la clase.') . '</p>',
+    ];
+    $form['generator_container2']['integration_logic']['validate_method_integration_logic'] = [
+      '#type' => 'checkbox',
+      '#title' => t('Function validateForm'),
+      '#size' => 10,
+      '#maxlength' => 255,
+      '#default_value' => 1,
+      '#description' => '<p>' . t('Se declarara la function en la clase.') . '</p>',
     ];
     return $form;
   }
@@ -288,7 +150,6 @@ class FormGeneratorForm extends GenericGeneratorForm
       drupal_set_message($success?t('Operacion realizada con exito'):t('Fallo la operacion'));
     }
 
-
     private function validateRegionalInputs(FormStateInterface $form_state) {
       $form_id = $form_state->getValue('formId');
       if ($form_id == '')
@@ -308,12 +169,13 @@ class FormGeneratorForm extends GenericGeneratorForm
       }
     }
 
-      private function validateIntegrationInput(array $form, FormStateInterface $form_state) {
+    private function validateIntegrationInput(array $form, FormStateInterface $form_state) {
         $class_integration = $form_state->getValue('class_integration');
         $module_int = $form_state->getValue('module_integration');
-
         $module_imp = $form_state->getValue('module_integration_logic');
         $class_specific_logic = $form_state->getValue('class_integration_logic');
+        $service_int = $form_state->getValue('service_integration');
+        $form_class = $form_state->getValue('form_class');
         if ($module_int == '') {
           $form_state->setErrorByName('module_integration', $this->t('Debe seleccionar un modulo.'));
         }
@@ -321,12 +183,16 @@ class FormGeneratorForm extends GenericGeneratorForm
           $form_state->setErrorByName('class_integration', $this->t('Debe introducir un nombre valido para la clase.'));
         }
         if ($module_imp == '') {
-          $form_state->setErrorByName('module_imp', $this->t('Debe seleccionar un modulo.'));
+          $form_state->setErrorByName('module_integration_logic', $this->t('Debe seleccionar un modulo.'));
         }
         if ($class_specific_logic == '') {
-          $form_state->setErrorByName('class_specific_logic', $this->t('Debe introducir un nombre para la clase.'));
+          $form_state->setErrorByName('class_integration_logic', $this->t('Debe introducir un nombre para la clase.'));
         }
-
-
+        if ($service_int == '') {
+          $form_state->setErrorByName('service_integration', $this->t('Debe introducir un identificador valido.'));
+        }
+        if ($form_class == '') {
+          $form_state->setErrorByName('form_class', $this->t('Debe introducir el nombre de la clase Formulario.'));
+        }
       }
 }
