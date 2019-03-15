@@ -102,6 +102,7 @@ class BlockGeneratorForm extends GenericGeneratorForm {
         $class_regional = $form_state->getValue('class_regional');
         $class_regional_logic = $form_state->getValue('class_regional_logic');
         $builder_controller = \Drupal::service('bits_developer.reg-block.builder');
+
         $builder_controller->addClassComments($class_regional, $block_id, $admin_label);
         $builder_controller->addClass($class_regional);
         $builder_controller->addIdentificator($service_regional);
@@ -113,16 +114,17 @@ class BlockGeneratorForm extends GenericGeneratorForm {
         $class_integration = $form_state->getValue('class_integration');
         $class_integration_logic = $form_state->getValue('class_integration_logic');
         $builder_controller = \Drupal::service('bits_developer.integration-block.builder');
+
         $builder_controller->addClassComments($class_integration, $block_id, $admin_label);
         $builder_controller->addClass($class_integration);
         $builder_controller->addIdentificator($service_integration);
         $builder_controller->addLogicClass($class_integration_logic);
     }
-        $builder_controller->addImplementToClass();
-        $builder_controller->addModule($module);
-        $builder_controller->addMethodList($generate_methods);
+    $builder_controller->addImplementToClass();
+    $builder_controller->addModule($module);
+    $builder_controller->addMethodList($generate_methods);
 
-        $success = $builder_controller->buildFiles();
+    $success = $builder_controller->buildFiles();
   }
 
 }

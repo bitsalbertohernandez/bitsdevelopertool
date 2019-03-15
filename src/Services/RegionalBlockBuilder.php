@@ -52,24 +52,24 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
     ];
   }
   
-  /**
-   * Array of Create Methods Block Comments
-   *
-   * @return array
-   */
-  private function createComments() {
-    $namespace = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::BLOCK));
-    $this->block_generator->addUse($this->container_interface);
-    $container = $this->container_interface . ' $container';
-    return [
-      "Create Block Class. \n",
-      "@param $namespace\\$this->container_name \n Block container.",
-      "@param array $this->configuration_prop \n Block configuration.",
-      "@param string $this->plugin_id_prop \n Plugin identification.",
-      "@param mixed $this->plugin_definition_prop \n Plugin definition.",
-      "\n\n@return static",
-    ];
-  }
+//  /**
+//   * Array of Create Methods Block Comments
+//   *
+//   * @return array
+//   */
+//  private function createComments() {
+//    $namespace = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::BLOCK));
+//    $this->block_generator->addUse($this->container_interface);
+//    $container = $this->container_interface . ' $container';
+//    return [
+//      "Create Block Class. \n",
+//      "@param $namespace\\$this->container_name \n Block container.",
+//      "@param array $this->configuration_prop \n Block configuration.",
+//      "@param string $this->plugin_id_prop \n Plugin identification.",
+//      "@param mixed $this->plugin_definition_prop \n Plugin definition.",
+//      "\n\n@return static",
+//    ];
+//  }
   
   
   /**
@@ -201,38 +201,10 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
     
     // Create method code.
     $bodyCreate = $this->generateCreateBlockBaseClassBody();
-    $create_method = $block_generator->addMethod('create', $bodyCreate, $this->createComments(), $this->createArguments(), 'static');
+    $create_method = $block_generator->addMethod('create', $bodyCreate, parent::createComments(), $this->createArguments(), 'static');
     
     // Generate selected methodsfrom Form.
     $this->generateMethods($block_generator);
-  }
-  
-  /**
-   * Create Block Class Logic.
-   *
-   * @param $block_generator
-   * @param $namespace_logic
-   */
-  private function createBlockClassLogic(&$block_generator, $namespace_logic) {
-    $block_generator = new BlockGenerator();
-    $block_generator->addNameSpace($namespace_logic);
-    
-    // Generate properties of Logic Class.
-    $block_generator->addClassProperty($this->logic_instance_property, "", "", FALSE, 'protected');
-    $block_generator->addClassProperty($this->logic_config_property, "", "", FALSE, 'protected');
-    
-    // Generate methods default setConfig.
-    $set_config_body = $this->getSetConfigBody();
-    
-    $block_generator->addMethod(
-      'setConfig',
-      $set_config_body,
-      $this->setConfigComments(),
-      $this->setConfigArguments($block_generator)
-    );
-    
-    // Generate selected Methods from Form.
-    $this->generateMethods($block_generator, FALSE);
   }
   
   /**
