@@ -239,6 +239,9 @@ class GenericGenerator {
         if (isset($arg['value'])) {
           $param->setDefaultValue($arg['value']);
         }
+        if (isset($arg['reference'])) {
+          $param->setReference(true);
+        }
       }
     }
     return $namespace;
