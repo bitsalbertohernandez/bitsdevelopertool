@@ -91,30 +91,38 @@ class BlockGeneratorForm extends GenericGeneratorForm {
       "blockSubmit" => $form_state->getValue('blockSubmit')
     ];
 
-    $class_regional = $form_state->getValue('class_regional');
-
     $block_id = $form_state->getValue('block_id');
 
     $admin_label = $form_state->getValue('admin_label');
 
     $module = $form['module']['#options'][$form_state->getValue('module')];
 
-    $service_regional = $form_state->getValue('service_regional');
-
-    $class_regional_logic = $form_state->getValue('class_regional_logic');
-
     if ($form_state->getValue('only_logic') == 0) {
-      $builder_controller = \Drupal::service('bits_developer.reg-block.builder');
-      $builder_controller->addClassComments($class_regional, $block_id, $admin_label);
-      $builder_controller->addClass($class_regional);
-      $builder_controller->addModule($module);
-      $builder_controller->addImplementToClass();
-      $builder_controller->addMethodList($generate_methods);
-      $builder_controller->addIdentificator($service_regional);
-      $builder_controller->addLogicClass($class_regional_logic);
+        $service_regional = $form_state->getValue('service_regional');
+        $class_regional = $form_state->getValue('class_regional');
+        $class_regional_logic = $form_state->getValue('class_regional_logic');
+        $builder_controller = \Drupal::service('bits_developer.reg-block.builder');
+        $builder_controller->addClassComments($class_regional, $block_id, $admin_label);
+        $builder_controller->addClass($class_regional);
+        $builder_controller->addIdentificator($service_regional);
+        $builder_controller->addLogicClass($class_regional_logic);
 
-      $success = $builder_controller->buildFiles();
     }
+    else{
+        $service_integration = $form_state->getValue('service_integration');
+        $class_integration = $form_state->getValue('class_integration');
+        $class_integration_logic = $form_state->getValue('class_integration_logic');
+        $builder_controller = \Drupal::service('bits_developer.integration-block.builder');
+        $builder_controller->addClassComments($class_integration, $block_id, $admin_label);
+        $builder_controller->addClass($class_integration);
+        $builder_controller->addIdentificator($service_integration);
+        $builder_controller->addLogicClass($class_integration_logic);
+    }
+        $builder_controller->addImplementToClass();
+        $builder_controller->addModule($module);
+        $builder_controller->addMethodList($generate_methods);
+
+        $success = $builder_controller->buildFiles();
   }
 
 }
