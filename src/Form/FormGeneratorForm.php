@@ -13,17 +13,6 @@ use Drupal\bits_developer_tool\Common\FileManager;
 
 class FormGeneratorForm extends GenericGeneratorForm
 {
-  private $global_config;
-  /**
-   * @var \Drupal\bits_developer_tool\Common\NameSpacePathConfig
-   */
-  private $namespace_path_config;
-  private $namespace;
-  private $namespace_logic;
-  private $path;
-  private $path_logic;
-  private $namespace_regional_class;
-  private $file_manager;
 
   /**
    * {@inheritdoc}.
