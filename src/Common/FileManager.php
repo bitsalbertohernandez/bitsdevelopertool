@@ -10,8 +10,6 @@ class FileManager
   private $yaml;
   const PATH_PREFIX = "{modulo}";
   const ID_CONFIG = "bits_developer_tool.generalconfig";
-
-  /** @var \Drupal\bits_developer_tool\Common\NameSpacePathConfig */
   private $namespace_path;
 
   public function __construct()
@@ -181,24 +179,5 @@ class FileManager
    */
   public function pathExist($path){
      return file_exists($path);
-  }
-
-  public function existClass($module, $type, $class) {
-    $internal_path = '';
-    switch ($type) {
-      case TypeOfFile::FORM: $internal_path = '/src/Plugin/Config/Form/'; break;
-      case TypeOfFile::BLOCK: $internal_path = '/src/Plugin/Config/Block/'; break;
-    }
-    $classPath = DRUPAL_ROOT . '\\' . $this->modulePath($module) . $internal_path . $class;
-    //$files = scandir(str_replace('/','\\', $classPath));
-    $exists = file_exists(str_replace('/','\\', $classPath));
-    //ksm(str_replace('/','\\', $classPath),$exists,$module,$class);
-    return $exists;
-  }
-
-  public function getNamespace($module, $type, $class) {
-    $namespace = $this->namespace_path->getNameSpaceLogic($type);
-    $classPath =  str_replace(FileManager::PATH_PREFIX, $module, $namespace). '\\' . $class;
-    return $classPath;
   }
 }
