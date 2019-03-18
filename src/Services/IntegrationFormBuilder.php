@@ -222,18 +222,6 @@ class IntegrationFormBuilder {
   }
 
   /**
-   * Generate Body of Function Form Base Class.
-   *
-   * @return string
-   */
-  private function generateFunctionFormClassBody($function) {
-    $if = "if (method_exists(".'$this->'."$this->regional_property, "."'$function'".")) {\n";
-    $body = '    $this->'."$this->regional_property->$function(".'$'."form, ".'$'."form_state); \n}";
-    return $if  . $body;
-  }
-
-
-  /**
    * Array of Construct Form Comments
    *
    * @return array

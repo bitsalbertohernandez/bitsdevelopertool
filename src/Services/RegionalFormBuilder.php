@@ -128,7 +128,7 @@ class RegionalFormBuilder {
    *
    * @return string
    */
-  private function generateContructFormBaseClassBody() {
+  private function generateConstructFormClassBody() {
     $instance = "// Store our dependency. \n" . '$this->' . $this->regional_property . ' = $' . $this->regional_property.';';
     $set_config = "\n" . '$this->'.$this->regional_property.'->createInstance($this);';
     return $instance  . $set_config;
@@ -180,7 +180,7 @@ class RegionalFormBuilder {
    *
    * @return string
    */
-  private function generateGetFormIdBodyFormBase() {
+  private function generateGetFormIdBodyFormClass() {
     return '$this->'."$this->regional_property->getFormId();";
   }
 
@@ -199,7 +199,7 @@ class RegionalFormBuilder {
    *
    * @return array
    */
-  private function functionsFormBaseComments($function, $arguments) {
+  private function functionsFormClassComments($function, $arguments) {
     $comments = [];
     $comments = ["$function Method Form Class. \n"];
     foreach ($arguments as $param) {
@@ -263,23 +263,23 @@ class RegionalFormBuilder {
     $form_generator->addClassProperty($this->regional_property, $regional_comment, "", FALSE, 'protected');
     
     // Constructor code.
-    $bodyContruct = $this->generateContructFormBaseClassBody();
+    $bodyContruct = $this->generateConstructFormClassBody();
     $form_generator->addMethod(
       '__construct',
       $bodyContruct,
       $this->constructComments($namespace_logic ."\\". $this->logic_Class),
       $this->constructArguments($this->regional_property, $namespace_logic ."\\". $this->logic_Class)
     );
-    $form_generator->addMethod('getFormId', $this->generateGetFormIdBodyFormBase(), $this->getFormIdComments());
+    $form_generator->addMethod('getFormId', $this->generateGetFormIdBodyFormClass(), $this->getFormIdComments());
 
     $buildFormArguments = $this->functionArguments('buildForm');
-    $form_generator->addMethod('buildForm', $this->generateFunctionFormClassBody('buildForm'), $this->functionsFormBaseComments('buildForm' ,$buildFormArguments),$buildFormArguments );
+    $form_generator->addMethod('buildForm', $this->generateFunctionFormClassBody('buildForm'), $this->functionsFormClassComments('buildForm' ,$buildFormArguments),$buildFormArguments );
 
     $submitFormArgument = $this->functionArguments('submitForm');
-    $form_generator->addMethod('submitForm', $this->generateFunctionFormClassBody('submitForm'), $this->functionsFormBaseComments('submitForm', $submitFormArgument), $submitFormArgument);
+    $form_generator->addMethod('submitForm', $this->generateFunctionFormClassBody('submitForm'), $this->functionsFormClassComments('submitForm', $submitFormArgument), $submitFormArgument);
 
     $validateFormArgument = $this->functionArguments('validateForm');
-    $form_generator->addMethod('validateForm', $this->generateFunctionFormClassBody('validateForm'), $this->functionsFormBaseComments('validateForm', $validateFormArgument), $validateFormArgument);
+    $form_generator->addMethod('validateForm', $this->generateFunctionFormClassBody('validateForm'), $this->functionsFormClassComments('validateForm', $validateFormArgument), $validateFormArgument);
   }
   
   /**
@@ -303,13 +303,13 @@ class RegionalFormBuilder {
     $form_generator->addMethod('getFormId',$this->generateGetFormIdBodyLogicClass(),$this->getFormIdComments(),[]);
 
     $buildFormArguments = $this->functionArguments('buildForm');
-    $form_generator->addMethod('buildForm', "", $this->functionsFormBaseComments('buildForm' ,$buildFormArguments), $buildFormArguments);
+    $form_generator->addMethod('buildForm', "", $this->functionsFormClassComments('buildForm' ,$buildFormArguments), $buildFormArguments);
 
     $submitFormArguments = $this->functionArguments('submitForm');
-    $form_generator->addMethod('submitForm', "", $this->functionsFormBaseComments('submitForm' ,$submitFormArguments), $submitFormArguments);
+    $form_generator->addMethod('submitForm', "", $this->functionsFormClassComments('submitForm' ,$submitFormArguments), $submitFormArguments);
 
     $validateFormArguments = $this->functionArguments('validateForm');
-    $form_generator->addMethod('validateForm', "", $this->functionsFormBaseComments('validateForm' ,$validateFormArguments), $validateFormArguments);
+    $form_generator->addMethod('validateForm', "", $this->functionsFormClassComments('validateForm' ,$validateFormArguments), $validateFormArguments);
 
   }
   
