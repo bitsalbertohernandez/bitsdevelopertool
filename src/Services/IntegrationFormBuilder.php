@@ -16,8 +16,6 @@ class IntegrationFormBuilder {
 
   private $module_impl;
   
-  private $identificator;
-  
   private $logic_Class;
   
   private $integration_extend = '';
@@ -123,16 +121,7 @@ class IntegrationFormBuilder {
   public function addModuleImpl($module) {
     $this->module_impl = $module;
   }
-  
-  /**
-   * Add Identificator Function.
-   *
-   * @param $identificator
-   */
-  public function addIdentificator($identificator) {
-    $this->identificator = $identificator;
-  }
-  
+
   /**
    * Add Logic Class Function.
    *
@@ -161,6 +150,16 @@ class IntegrationFormBuilder {
       "@param \\$namespace $configuration_instance \n Logic class of form.",
     ];
   }
+  /**
+   * Array of Contruct Arguments
+   *
+   * @return array
+   */
+  private function constructArguments($config_instance, $config_class) {
+    return [
+      ["name" => $config_instance, "type" => $config_class],
+    ];
+  }
 
   /**
    * Array of getFormId Method Form Comments
@@ -174,40 +173,6 @@ class IntegrationFormBuilder {
     ];
   }
 
-  
-  /**
-   * Generate Body of Contruct Form Base Class.
-   *
-   * @return string
-   */
-  private function generateContructFormBaseClassBody() {
-    $instance = "// Store our dependency. \n" . '$this->' . $this->regional_property . ' = $' . $this->regional_property.';';
-    $set_config = "\n" . '$this->'.$this->regional_property.'->createInstance($this);';
-    return $instance  . $set_config;
-  }
-
-  /**
-   * Generate Body of Function Form Base Class.
-   *
-   * @return string
-   */
-  private function generateFunctionFormClassBody($function) {
-    $if = "if (method_exists(".'$this->'."$this->regional_property, "."'$function'".")) {\n";
-    $body = '    $this->'."$this->regional_property->$function(".'$'."form, ".'$'."form_state); \n}";
-    return $if  . $body;
-  }
-
-  /**
-   * Generate Body of Function createInstance.
-   *
-   * @return string
-   */
-  private function generateCreateInstanceBodyFormClass($params) {
-
-    $body = '    $this->'."$this->form_instance".' = &$'."$params;";
-    return  $body;
-  }
-
   /**
    * Generate body of method getFormId.
    *
@@ -217,23 +182,20 @@ class IntegrationFormBuilder {
 
     return "return '$this->form_id';";
   }
-  
-  /**
-   * Array of Contruct Arguments
-   *
-   * @return array
-   */
-  private function constructArguments($config_instance, $config_class) {
-    return [
-      ["name" => $config_instance, "type" => $config_class],
-    ];
+
+
+
+  private function functionsFormClassComments($function, $arguments) {
+    $comments = [];
+    $comments = ["$function Method Form Class Logic. \n"];
+    foreach ($arguments as $param) {
+      $type = $param["type"];
+      $name = $param["name"];
+      array_push($comments, "@param \\$type $name \n");
+    }
+    return $comments;
   }
 
-  private function createInstanceArguments($formBaseClass) {
-    return [
-      ["name" => "form", "type" => $formBaseClass, "reference" => true],
-    ];
-  }
   /**
    * Array of Arguments
    *
@@ -260,6 +222,18 @@ class IntegrationFormBuilder {
   }
 
   /**
+   * Generate Body of Function Form Base Class.
+   *
+   * @return string
+   */
+  private function generateFunctionFormClassBody($function) {
+    $if = "if (method_exists(".'$this->'."$this->regional_property, "."'$function'".")) {\n";
+    $body = '    $this->'."$this->regional_property->$function(".'$'."form, ".'$'."form_state); \n}";
+    return $if  . $body;
+  }
+
+
+  /**
    * Array of Construct Form Comments
    *
    * @return array
@@ -272,15 +246,21 @@ class IntegrationFormBuilder {
     ];
   }
 
-  private function functionsFormClassComments($function, $arguments) {
-    $comments = [];
-    $comments = ["$function Method Form Class Logic. \n"];
-    foreach ($arguments as $param) {
-      $type = $param["type"];
-      $name = $param["name"];
-      array_push($comments, "@param \\$type $name \n");
-    }
-    return $comments;
+  private function createInstanceArguments($formBaseClass) {
+    return [
+      ["name" => "form", "type" => $formBaseClass, "reference" => true],
+    ];
+  }
+
+  /**
+   * Generate Body of Function createInstance.
+   *
+   * @return string
+   */
+  private function generateCreateInstanceBodyFormClass($params) {
+
+    $body = '    $this->'."$this->form_instance".' = &$'."$params;";
+    return  $body;
   }
   
   /**
