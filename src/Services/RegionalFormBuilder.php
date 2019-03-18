@@ -28,10 +28,6 @@ class RegionalFormBuilder {
 
   private $form_id;
   
-  private $interface = "Drupal\Core\Plugin\ContainerFactoryPluginInterface";
-  
-  private $interface_name = 'ContainerFactoryPluginInterface';
-  
   /**
    * @var \Drupal\bits_developer_tool\Common\FileManager
    */
@@ -55,31 +51,7 @@ class RegionalFormBuilder {
     $this->form_generator = \Drupal::service('bits_developer.form.generator');
     $this->namespace_path = \Drupal::service('bits_developer.namespace.path');
   }
-  
-  /**
-   * Add Class Comments to Forms
-   *
-   * @param $class_name Class Name.
-   * @param $id_form New form id.
-   * @param $admin_label Internacionalization Form label.
-   */
-  public function addClassComments($class_name, $id_form, $admin_label) {
-    $this->form_generator->addClassCommentForm($class_name, $id_form, $admin_label);
-  }
-  
-  /**
-   * Add Implements to a Class
-   *
-   */
-  public function addImplementToClass() {
-    $namespace = str_replace(
-      FileManager::PATH_PREFIX, $this->module,
-      $this->namespace_path->getNameSpace(TypeOfFile::FORM)
-    );
-    
-    $this->form_generator->addUse($this->interface);
-    $this->form_generator->addImplement($namespace . "\\" . $this->interface_name);
-  }
+
   
   /**
    * Add Class Function.
@@ -148,6 +120,19 @@ class RegionalFormBuilder {
     return [
       "Contructor Form Class. \n",
       "@param \\$namespace $configuration_instance \n Logic class of form.",
+    ];
+  }
+
+  /**
+   * Array of Construct Form Comments
+   *
+   * @return array
+   */
+  private function createInstanceComments($namespace) {
+    $configuration_instance = "$" . $this->regional_property;
+    return [
+      "Create instance. \n",
+      "@param \\$namespace\\$this->class $this->form_instance \n  Form Class.",
     ];
   }
 
@@ -322,13 +307,21 @@ class RegionalFormBuilder {
     $form_generator->addUse('Drupal\Core\Form\FormStateInterface');
     $namespace = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::FORM));
     $form_generator->addUse($namespace."\\".$this->class);
-    $form_generator->addClassProperty($this->form_instance, "", "", FALSE, 'protected');
-    $form_generator->addMethod('createInstance',$this->generateCreateInstanceBodyFormClass('form'),[],$this->createInstanceArguments($namespace."\\".$this->class));
-    $form_generator->addMethod('getFormId',$this->generateGetFormIdBodyLogicClass(),[],[]);
-    $form_generator->addMethod('buildForm', "", [], $this->functionArguments('buildForm'));
-    $form_generator->addMethod('submitForm', "", [], $this->functionArguments('submitForm'));
-    $form_generator->addMethod('validateForm', "", [], $this->functionArguments('validateForm'));
+    $form_comment = $this->regional_property_comment.$namespace."\\".$this->class;
+    $form_generator->addClassProperty($this->form_instance, $form_comment, "", FALSE, 'protected');
 
+    $form_generator->addMethod('createInstance',$this->generateCreateInstanceBodyFormClass('form'),$this->createInstanceComments($namespace),$this->createInstanceArguments($namespace."\\".$this->class));
+
+    $form_generator->addMethod('getFormId',$this->generateGetFormIdBodyLogicClass(),$this->getFormIdComments(),[]);
+
+    $buildFormArguments = $this->functionArguments('buildForm');
+    $form_generator->addMethod('buildForm', "", $this->functionsFormBaseComments('buildForm' ,$buildFormArguments), $buildFormArguments);
+
+    $submitFormArguments = $this->functionArguments('submitForm');
+    $form_generator->addMethod('submitForm', "", $this->functionsFormBaseComments('submitForm' ,$submitFormArguments), $submitFormArguments);
+
+    $validateFormArguments = $this->functionArguments('validateForm');
+    $form_generator->addMethod('validateForm', "", $this->functionsFormBaseComments('validateForm' ,$validateFormArguments), $validateFormArguments);
 
   }
   
