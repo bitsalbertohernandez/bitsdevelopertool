@@ -258,6 +258,30 @@ class IntegrationFormBuilder {
         ]; break;
     }
   }
+
+  /**
+   * Array of Construct Form Comments
+   *
+   * @return array
+   */
+  private function createInstanceComments($namespace) {
+    $configuration_instance = "$" . $this->regional_property;
+    return [
+      "Create instance. \n",
+      "@param \\$namespace\\$this->form_Class $this->form_instance \n  Form Class.",
+    ];
+  }
+
+  private function functionsFormClassComments($function, $arguments) {
+    $comments = [];
+    $comments = ["$function Method Form Class Logic. \n"];
+    foreach ($arguments as $param) {
+      $type = $param["type"];
+      $name = $param["name"];
+      array_push($comments, "@param \\$type $name \n");
+    }
+    return $comments;
+  }
   
   /**
    * Create Form Class Logic.
@@ -277,18 +301,17 @@ class IntegrationFormBuilder {
     $form_generator->addUse('Drupal\Core\Form\FormStateInterface');
     $form_generator->addExtend($namespace_extend_class."\\".$this->integration_extend);
 
-    $form_generator->addClassProperty($this->form_instance, "", "", FALSE, 'protected' );
-    $form_generator->addMethod('createInstance',$this->generateCreateInstanceBodyFormClass('form'),[],$this->createInstanceArguments($namespace_form_class."\\".$this->form_Class));
+    $form_comment = $this->regional_property_comment.$namespace_form_class."\\".$this->form_Class;
+    $form_generator->addClassProperty($this->form_instance, $form_comment, "", FALSE, 'protected' );
+
+    $form_generator->addMethod('createInstance',$this->generateCreateInstanceBodyFormClass('form'),$this->createInstanceComments($namespace_form_class),$this->createInstanceArguments($namespace_form_class."\\".$this->form_Class));
     $this->generateMethodLogicClass($form_generator);
-    //$form_generator->addMethod('getFormId',$this->generateGetFormIdBodyLogicClass(),[],[]);
-    //$form_generator->addMethod('buildForm', "", [], $this->functionArguments('buildForm'));
-    //$form_generator->addMethod('submitForm', "", [], $this->functionArguments('submitForm'));
-    //$form_generator->addMethod('validateForm', "", [], $this->functionArguments('validateForm'));
   }
 
   private function generateMethodLogicClass(&$form_generator) {
     foreach ($this->methodImpl as $method) {
-      $form_generator->addMethod($method, "", [], $this->functionArguments($method));
+      $arguments = $this->functionArguments($method);
+      $form_generator->addMethod($method, "", $this->functionsFormClassComments($method, $arguments),$arguments);
     }
   }
 
