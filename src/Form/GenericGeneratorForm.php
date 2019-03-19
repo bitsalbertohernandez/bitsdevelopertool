@@ -326,7 +326,7 @@ abstract class GenericGeneratorForm extends FormBase
     if ($form_state->getValue('only_logic') == 0)
       $this->validateRegionalInputs($form_state);
     else {
-      $this->validateIntegrationInput($form, $form_state);
+      $this->validateIntegrationInput($form_state);
     }
   }
   protected function validateRegionalInputs(FormStateInterface $form_state) {
@@ -368,5 +368,16 @@ abstract class GenericGeneratorForm extends FormBase
     if ($service_int == '') {
       $form_state->setErrorByName('service_integration', $this->t('Debe introducir un identificador valido.'));
     }
+    if ($class_integration != '') {
+      $module_list = \Drupal::service('bits_developer.util.operation')->listModule();
+      $index = intval($module_int);
+      $path = str_replace(FileManager::PATH_PREFIX, $module_list[$index], $form_state->getValue('path_regional_logic'));
+      $file = DRUPAL_ROOT. '/modules/custom/' . $path . '/' . $class_integration . '.php';
+      $file_manager = \Drupal::service('bits_developer.file.manager');
+      $exist = $file_manager->fileExist(str_replace('\\','/',$file));
+      if (!$exist)
+        $form_state->setErrorByName('class_integration', 'La clase nombrada no existe en ese modulo');
+    }
   }
+
 }

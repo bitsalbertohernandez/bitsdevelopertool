@@ -180,4 +180,15 @@ class FileManager
   public function pathExist($path){
      return file_exists($path);
   }
+
+  /**
+   * Saber si existe un directorio.
+   *
+   * @param string $path
+   *  Ruta del directorio.
+   * @return void
+   */
+  public function fileExist($file){
+    return file_exists($file);
+  }
 }

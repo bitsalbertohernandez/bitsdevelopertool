@@ -91,7 +91,7 @@ class FormGeneratorForm extends GenericGeneratorForm
   private function generateIntegrationClasses(array $form, FormStateInterface $form_state) {
     $methods = [];
     $class_integration = $form_state->getValue('class_integration');
-    $module_int = $module = $form['generator_container2']['integration']['module_integration']['#options'][$form_state->getValue('module_integration')];;
+    $module_int = $form['generator_container2']['integration']['module_integration']['#options'][$form_state->getValue('module_integration')];
     $module_imp = $form['generator_container2']['integration_logic']['module_integration_logic']['#options'][$form_state->getValue('module_integration_logic')];
     $class_specific_logic = $form_state->getValue('class_integration_logic');
     $service_int = $form_state->getValue('service_integration');
