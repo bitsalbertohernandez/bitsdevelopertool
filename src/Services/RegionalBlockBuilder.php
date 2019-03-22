@@ -9,7 +9,7 @@ use Drupal\bits_developer_tool\Common\YAMLType;
 use Drupal\bits_developer_tool\Services\ParentBlockBuilder;
 
 class RegionalBlockBuilder extends ParentBlockBuilder {
-  
+
   /**
    * Add Class Comments to Blocks
    *
@@ -20,7 +20,7 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
   public function addClassComments($class_name, $id_block, $admin_label) {
     $this->block_generator->addClassCommentBlock($class_name, $id_block, $admin_label);
   }
-  
+
   /**
    * Add Implements to a Class
    *
@@ -30,18 +30,18 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
       FileManager::PATH_PREFIX, $this->module,
       $this->namespace_path->getNameSpace(TypeOfFile::BLOCK)
     );
-    
+
     $this->block_generator->addUse($this->interface);
     $this->block_generator->addImplement($namespace . "\\" . $this->interface_name);
   }
-  
-  
+
+
   /**
    * Array of Construct Block Comments
    *
    * @return array
    */
-  private function constructComments($namespace) {
+  public function constructComments($namespace) {
     $configuration_instance = "$" . $this->regional_property;
     return [
       "Contructor Block Class. \n",
@@ -51,33 +51,33 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
       "@param $namespace $configuration_instance \n Logic class of block.",
     ];
   }
-  
-//  /**
-//   * Array of Create Methods Block Comments
-//   *
-//   * @return array
-//   */
-//  private function createComments() {
-//    $namespace = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::BLOCK));
-//    $this->block_generator->addUse($this->container_interface);
-//    $container = $this->container_interface . ' $container';
-//    return [
-//      "Create Block Class. \n",
-//      "@param $namespace\\$this->container_name \n Block container.",
-//      "@param array $this->configuration_prop \n Block configuration.",
-//      "@param string $this->plugin_id_prop \n Plugin identification.",
-//      "@param mixed $this->plugin_definition_prop \n Plugin definition.",
-//      "\n\n@return static",
-//    ];
-//  }
-  
-  
+
+  /**
+   * Array of Create Methods Block Comments
+   *
+   * @return array
+   */
+  public function createComments() {
+    $namespace = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::BLOCK));
+    $this->block_generator->addUse($this->container_interface);
+    $container = $this->container_interface . ' $container';
+    return [
+      "Create Block Class. \n",
+      "@param $namespace\\$this->container_name \n Block container.",
+      "@param array $this->configuration_prop \n Block configuration.",
+      "@param string $this->plugin_id_prop \n Plugin identification.",
+      "@param mixed $this->plugin_definition_prop \n Plugin definition.",
+      "\n\n@return static",
+    ];
+  }
+
+
   /**
    * Array of Set Config Methods Comments
    *
    * @return array
    */
-  private function setConfigComments() {
+  public function setConfigComments() {
     $namespace = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::BLOCK));
     $container = $this->container_interface . ' $container';
     return [
@@ -87,37 +87,37 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
       "\n@return void",
     ];
   }
-  
+
   /**
    * Generate Body of Contruct Block Base Class.
    *
    * @return string
    */
-  private function generateContructBlockBaseClassBody() {
+  public function generateContructBlockBaseClassBody() {
     $instance = "// Store our dependency. \n" . '$this->' . $this->regional_property . ' = $' . $this->regional_property;
     $parent = "\n\n// Call parent construct method. \n" . 'parent::__construct(' . $this->configuration_prop . ', ' . $this->plugin_id_prop . ', ' . $this->plugin_definition_prop . ');';
     $set_config = "\n\n// Set init config. \n" . '$this->configurationInstance->setConfig($this, $this->configuration);';
     return $instance . $parent . $set_config;
   }
-  
+
   /**
    * Genetate Body of Create Method Block Base Class.
    *
    * @return string
    */
-  private function generateCreateBlockBaseClassBody() {
+  public function generateCreateBlockBaseClassBody() {
     $ident = "'$this->identificator'";
     $containter = '$container->get(' . $ident . ')';
     return "return new static(\n  $this->configuration_prop,\n  $this->plugin_id_prop,\n  $this->plugin_definition_prop,\n  $containter\n);";
   }
-  
+
   /**
    * Array of Create Arguments
    *
    * @return array
    */
-  private function createArguments() {
-    
+  public function createArguments() {
+
     return [
       ["name" => "container", "type" => $this->container_interface],
       ["name" => "configuration", "type" => "array"],
@@ -125,13 +125,13 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
       ["name" => "plugin_definition"],
     ];
   }
-  
+
   /**
    * Array of Contruct Arguments
    *
    * @return array
    */
-  private function constructArguments($config_instance, $config_class, $namespace_logic) {
+  public function constructArguments($config_instance, $config_class, $namespace_logic) {
     $this->block_generator->addUse($namespace_logic . "\\" . $this->logic_Class);
     return [
       ["name" => "configuration", "type" => "array"],
@@ -140,16 +140,16 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
       ["name" => $config_instance, "type" => $config_class],
     ];
   }
-  
+
   /**
    * Array of set config Arguments
    *
    * @return array
    */
-  private function setConfigArguments(&$block_generator) {
+  public function setConfigArguments(&$block_generator) {
     $namespace = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::BLOCK));
     $block_generator->addUse($namespace . "\\" . $this->class);
-    
+
     return [
       [
         "name" => $this->logic_instance_property,
@@ -163,50 +163,87 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
       ],
     ];
   }
-  
-  
+
+
   /**
    * Generate Body of setConfig Block Logic Class.
    *
    * @return string
    */
-  private function getSetConfigBody() {
+  public function getSetConfigBody() {
     $instance = '$this->' . $this->logic_instance_property . ' = &$' . $this->logic_instance_property . ";";
     $config = "\n" . '$this->' . $this->logic_config_property . ' = &$' . $this->logic_config_property . ";";
     return $instance . $config;
   }
-  
+
+
   /**
-   * Create Block Base Class.
+   * Generate Body of default configuration method.
    *
-   * @param $block_generator
-   * @param $namespace_logic
+   * @return string
    */
-  private function createBlockBase(&$block_generator, $namespace_logic) {
-    $namespace = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::BLOCK));
-    
-    $block_generator->addUse($this->regional_use);
-    $block_generator->addExtend($namespace . "\\" . $this->regional_extend);
-    $block_generator->addNameSpace($namespace);
-    $block_generator->addClassProperty($this->regional_property, $this->regional_property_comment . "$namespace_logic\\$this->logic_Class", "", FALSE, 'protected');
-    
-    // Create Contruct Method.
-    $bodyContruct = $this->generateContructBlockBaseClassBody();
-    $block_generator->addMethod(
-      '__construct',
-      $bodyContruct,
-      $this->constructComments($namespace_logic . "\\" . $this->logic_Class),
-      $this->constructArguments($this->regional_property, $namespace . "\\" . $this->logic_Class, $namespace_logic)
-    );
-    
-    // Create method code.
-    $bodyCreate = $this->generateCreateBlockBaseClassBody();
-    $create_method = $block_generator->addMethod('create', $bodyCreate, parent::createComments(), $this->createArguments(), 'static');
-    
-    // Generate selected methodsfrom Form.
-    $this->generateMethods($block_generator);
+  public function getBodyDefaultConfiguration() {
+    $body = 'if (method_exists($this->' . $this->regional_property . ', "defaultConfiguration")) {'
+      . "\n" . '   return $this->' . $this->regional_property . '->defaultConfiguration();'
+      . "\n}\n" . 'return parent::defaultConfiguration();';
+
+    return $body;
   }
-  
+
+  /**
+   * Generate Body of block Access Method Base.
+   *
+   * @return string
+   */
+  public function getBodyBlockAccessBaseClass() {
+    $body = 'if (method_exists($this->' . $this->regional_property . ', "blockAccess")) {'
+      . "\n" . '   return $this->' . $this->regional_property . '->blockAccess($account);'
+      . "\n}\n" . 'return parent::blockAccess($account);';
+
+    return $body;
+  }
+
+  /**
+   * Generate Body of Block Form Method Base.
+   *
+   * @return string
+   */
+  public function getBodyBlockBaseClass($type) {
+    $body = 'if (method_exists($this->' . $this->regional_property . ', "block' . $type . '")) {'
+      . "\n" . '   return $this->' . $this->regional_property . '->block' . $type . '($form, $form_state);'
+      . "\n}\n" . 'return parent::block' . $type . '($form, $form_state);';
+
+    return $body;
+  }
+
+  /**
+   * Generate Body of Block Form Method Base.
+   *
+   * @return string
+   */
+  public function getBodyBlockBaseClassWithConfig($type) {
+    $body = 'if (method_exists($this->' . $this->regional_property . ', "block' . $type . '")) {'
+      . "\n" . '   return $this->' . $this->regional_property . '->block' . $type . '($form, $form_state, $this->' . $this->configuration_prop . ');'
+      . "\n}\n" . 'return parent::block' . $type . '($form, $form_state);';
+
+    return $body;
+  }
+
+
+  /**
+   * Generate Body of Build Block Method Base.
+   *
+   * @return string
+   */
+  public function getBodyBuildMethodBase() {
+    $body = 'if (method_exists($this->' . $this->regional_property . ', "build")) {'
+      . "\n" . '   return $this->' . $this->regional_property . '->build($this, $this->' . $this->configuration_prop . ');'
+      . "\n}\n" . 'return parent::build($this, $this->' . $this->configuration_prop . ');';
+
+    return $body;
+  }
+
+
   /**
    * Generate Path And Code in Base And Logic Class.
    *
@@ -215,7 +252,7 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
    *
    * @return array
    */
-  private function generatePathAndCode($block_generator, $class, $is_base = TRUE) {
+  public function generatePathAndCode($block_generator, $class, $is_base = TRUE) {
     $code = $block_generator->generateClass($class);
     $path = $this->getPathByType($is_base);
     if (!$this->file_manager->pathExist($path)) {
@@ -224,7 +261,7 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
     $dir_file = $path . '/' . $class . '.php';
     return ['code' => $code, 'dir_file' => $dir_file];
   }
-  
+
   /**
    * Add Generate Method Into Block Base and Logic Block Base.
    *
@@ -235,7 +272,7 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
   public function addMethodList($generate_list = []) {
     $this->addMethodListToGenerate($generate_list);
   }
-  
+
   /**
    * Build Files Function.
    */
@@ -245,36 +282,5 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
       $this->generateBlockClass(TypeOfFile::BLOCK_LOGIC);
     }
   }
-  
-  /**
-   * Generate Block Class Function.
-   *
-   * @param $type
-   *
-   * @return bool
-   */
-  protected function generateBlockClass($type) {
-    
-    $block_generator = $this->block_generator;
-    $success = FALSE;
-    $namespace_logic = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpaceLogic(TypeOfFile::BLOCK));
-    $code = "";
-    $dir_file = "";
-    $dir_module = $this->file_manager->modulePath($this->module, $dir_file);
-    if ($type == TypeOfFile::BLOCK) {
-      $this->createBlockBase($block_generator, $namespace_logic);
-      $path_code = $this->generatePathAndCode($block_generator, $this->class);
-      $code = $path_code['code'];
-      $dir_file = $path_code['dir_file'];
-    }
-    else {
-      $this->createBlockClassLogic($block_generator, $namespace_logic);
-      $path_code = $this->generatePathAndCode($block_generator, $this->logic_Class, FALSE);
-      $code = $path_code['code'];
-      $dir_file = $path_code['dir_file'];
-    }
-    
-    
-    return $this->file_manager->saveFile($dir_file, "<?php \n \n" . $code);
-  }
+
 }

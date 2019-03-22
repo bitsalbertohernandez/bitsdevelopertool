@@ -9,7 +9,7 @@ use Drupal\bits_developer_tool\Common\YAMLType;
 use Drupal\bits_developer_tool\Services\ParentBlockBuilder;
 
 class IntegrationBlockBuilder extends ParentBlockBuilder {
-  
+
   /**
    * Add Class Comments to Blocks
    *
@@ -20,7 +20,7 @@ class IntegrationBlockBuilder extends ParentBlockBuilder {
   public function addClassComments($class_name, $id_block, $admin_label) {
     $this->block_generator->addClassCommentBlock($class_name, $id_block, $admin_label);
   }
-  
+
   /**
    * Add Implements to a Class
    *
@@ -30,18 +30,18 @@ class IntegrationBlockBuilder extends ParentBlockBuilder {
       FileManager::PATH_PREFIX, $this->module,
       $this->namespace_path->getNameSpace(TypeOfFile::BLOCK)
     );
-    
+
     $this->block_generator->addUse($this->interface);
     $this->block_generator->addImplement($namespace . "\\" . $this->interface_name);
   }
-  
-  
+
+
   /**
    * Array of Construct Block Comments
    *
    * @return array
    */
-  private function constructComments($namespace) {
+  public function constructComments($namespace) {
     $configuration_instance = "$" . $this->regional_property;
     return [
       "Contructor Block Class. \n",
@@ -51,13 +51,13 @@ class IntegrationBlockBuilder extends ParentBlockBuilder {
       "@param $namespace $configuration_instance \n Logic class of block.",
     ];
   }
-  
+
   /**
    * Array of Set Config Methods Comments
    *
    * @return array
    */
-  private function setConfigComments() {
+  public function setConfigComments() {
     $namespace = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::BLOCK));
     $container = $this->container_interface . ' $container';
     return [
@@ -67,14 +67,14 @@ class IntegrationBlockBuilder extends ParentBlockBuilder {
       "\n@return void",
     ];
   }
-  
+
   /**
    * Array of Create Arguments
    *
    * @return array
    */
-  private function createArguments() {
-    
+  public function createArguments() {
+
     return [
       ["name" => "container", "type" => $this->container_interface],
       ["name" => "configuration", "type" => "array"],
@@ -82,13 +82,13 @@ class IntegrationBlockBuilder extends ParentBlockBuilder {
       ["name" => "plugin_definition"],
     ];
   }
-  
+
   /**
    * Array of Contruct Arguments
    *
    * @return array
    */
-  private function constructArguments($config_instance, $config_class, $namespace_logic) {
+  public function constructArguments($config_instance, $config_class, $namespace_logic) {
     $this->block_generator->addUse($namespace_logic . "\\" . $this->logic_Class);
     return [
       ["name" => "configuration", "type" => "array"],
@@ -97,16 +97,16 @@ class IntegrationBlockBuilder extends ParentBlockBuilder {
       ["name" => $config_instance, "type" => $config_class],
     ];
   }
-  
+
   /**
    * Array of set config Arguments
    *
    * @return array
    */
-  private function setConfigArguments(&$block_generator) {
+  public function setConfigArguments(&$block_generator) {
     $namespace = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::BLOCK));
     $block_generator->addUse($namespace . "\\" . $this->class);
-    
+
     return [
       [
         "name" => $this->logic_instance_property,
@@ -120,19 +120,19 @@ class IntegrationBlockBuilder extends ParentBlockBuilder {
       ],
     ];
   }
-  
-  
+
+
   /**
    * Generate Body of setConfig Block Logic Class.
    *
    * @return string
    */
-  private function getSetConfigBody() {
+  public function getSetConfigBody() {
     $instance = '$this->' . $this->logic_instance_property . ' = &$' . $this->logic_instance_property . ";";
     $config = "\n" . '$this->' . $this->logic_config_property . ' = &$' . $this->logic_config_property . ";";
     return $instance . $config;
   }
-  
+
   /**
    * Generate Path And Code in Base And Logic Class.
    *
@@ -141,7 +141,7 @@ class IntegrationBlockBuilder extends ParentBlockBuilder {
    *
    * @return array
    */
-  private function generatePathAndCode($block_generator, $class, $is_base = TRUE) {
+  public function generatePathAndCode($block_generator, $class, $is_base = TRUE) {
     $code = $block_generator->generateClass($class);
     $path = $this->getPathByType($is_base);
     if (!$this->file_manager->pathExist($path)) {
@@ -150,7 +150,7 @@ class IntegrationBlockBuilder extends ParentBlockBuilder {
     $dir_file = $path . '/' . $class . '.php';
     return ['code' => $code, 'dir_file' => $dir_file];
   }
-  
+
   /**
    * Add Generate Method Into Block Base and Logic Block Base.
    *
@@ -161,15 +161,13 @@ class IntegrationBlockBuilder extends ParentBlockBuilder {
   public function addMethodList($generate_list = []) {
     $this->addMethodListToGenerate($generate_list);
   }
-  
+
   /**
    * Build Files Function.
    */
   public function buildFiles() {
-    if ($this->generateBlockClass(TypeOfFile::BLOCK)) {
       $this->generateYAMLConfig();
       $this->generateBlockClass(TypeOfFile::BLOCK_LOGIC);
-    }
   }
 
 }
