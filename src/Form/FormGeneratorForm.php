@@ -33,9 +33,9 @@ class FormGeneratorForm extends GenericGeneratorForm
 
   public function validateForm(array &$form, FormStateInterface $form_state) {
     if ($form_state->getValue('only_logic') == 0)
-      $this->validateRegionalInputs($form_state);
+      $this->validateFormRegionalInputs($form_state);
     else {
-      $this->validateIntegrationInput($form, $form_state);
+      $this->validateFormIntegrationInput($form, $form_state);
     }
 
   }
@@ -91,7 +91,7 @@ class FormGeneratorForm extends GenericGeneratorForm
   private function generateIntegrationClasses(array $form, FormStateInterface $form_state) {
     $methods = [];
     $class_integration = $form_state->getValue('class_integration');
-    $module_int = $module = $form['generator_container2']['integration']['module_integration']['#options'][$form_state->getValue('module_integration')];;
+    $module_int = $form['generator_container2']['integration']['module_integration']['#options'][$form_state->getValue('module_integration')];
     $module_imp = $form['generator_container2']['integration_logic']['module_integration_logic']['#options'][$form_state->getValue('module_integration_logic')];
     $class_specific_logic = $form_state->getValue('class_integration_logic');
     $service_int = $form_state->getValue('service_integration');
@@ -134,49 +134,20 @@ class FormGeneratorForm extends GenericGeneratorForm
     drupal_set_message($success?t('Operacion realizada con exito'):t('Fallo la operacion'));
   }
 
-  private function validateRegionalInputs(FormStateInterface $form_state) {
+  private function validateFormRegionalInputs(FormStateInterface $form_state) {
+    parent::validateRegionalInputs($form_state);
     $form_id = $form_state->getValue('formId');
     if ($form_id == '')
       $form_state->setErrorByName('formId', $this->t('Debe un identificador para el formulario.'));
-    $module = $form_state->getValue('module');
-    if ($module == '')
-      $form_state->setErrorByName('module', $this->t('Debe seleccionar un modulo.'));
-    $regional_service = $form_state->getValue('service_regional');
-    if ( str_replace(' ','', $regional_service) != $regional_service) {
-      $form_state->setErrorByName('service_regional', $this->t('El id del servicio no puede contener espacios en blanco.'));
-    }
-    if ($form_state->getValue('class_regional') == '') {
-      $form_state->setErrorByName('class_regional', $this->t('El nombre de la clase no puede ser vacio.'));
-    }
-    if ($form_state->getValue('class_regional_logic') == '') {
-      $form_state->setErrorByName('class_regional_logic', $this->t('El nombre de la clase no puede ser vacio.'));
-    }
+
   }
 
-  private function validateIntegrationInput(array $form, FormStateInterface $form_state) {
-    $class_integration = $form_state->getValue('class_integration');
-    $module_int = $form_state->getValue('module_integration');
-    $module_imp = $form_state->getValue('module_integration_logic');
-    $class_specific_logic = $form_state->getValue('class_integration_logic');
-    $service_int = $form_state->getValue('service_integration');
+  private function validateFormIntegrationInput(array $form, FormStateInterface $form_state) {
     $form_class = $form_state->getValue('form_class');
-    if ($module_int == '') {
-      $form_state->setErrorByName('module_integration', $this->t('Debe seleccionar un modulo.'));
-    }
-    if ($class_integration == '') {
-      $form_state->setErrorByName('class_integration', $this->t('Debe introducir un nombre valido para la clase.'));
-    }
-    if ($module_imp == '') {
-      $form_state->setErrorByName('module_integration_logic', $this->t('Debe seleccionar un modulo.'));
-    }
-    if ($class_specific_logic == '') {
-      $form_state->setErrorByName('class_integration_logic', $this->t('Debe introducir un nombre para la clase.'));
-    }
-    if ($service_int == '') {
-      $form_state->setErrorByName('service_integration', $this->t('Debe introducir un identificador valido.'));
-    }
     if ($form_class == '') {
       $form_state->setErrorByName('form_class', $this->t('Debe introducir el nombre de la clase Formulario.'));
     }
+    debug($form_state->getValue('form_class'), 'validateFormIntegrationInput', false);
+    parent::validateIntegrationInput($form_state);
   }
 }
