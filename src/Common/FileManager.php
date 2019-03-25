@@ -8,8 +8,8 @@ class FileManager
 {
 
   private $yaml;
-  public const PATH_PREFIX = "{modulo}";
-  public const ID_CONFIG = "bits_developer_tool.generalconfig";
+  const PATH_PREFIX = "{modulo}";
+  const ID_CONFIG = "bits_developer_tool.generalconfig";
   private $namespace_path;
 
   public function __construct()
@@ -179,5 +179,16 @@ class FileManager
    */
   public function pathExist($path){
      return file_exists($path);
+  }
+
+  /**
+   * Saber si existe un directorio.
+   *
+   * @param string $path
+   *  Ruta del directorio.
+   * @return void
+   */
+  public function fileExist($file){
+    return file_exists($file);
   }
 }

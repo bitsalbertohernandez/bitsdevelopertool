@@ -49,7 +49,7 @@ abstract class GenericGeneratorForm extends FormBase
       '#type' => 'select',
       '#title' => $this->t('Módulo donde se generarán los archivos'),
       '#empty_value' => '',
-      '#empty_option' => '- Selecione módulo -',
+      '#empty_option' => '- Seleccione módulo -',
       '#options' => $module_list,
       '#states' => [
         'invisible' => [
@@ -169,7 +169,7 @@ abstract class GenericGeneratorForm extends FormBase
       '#type' => 'select',
       '#title' => $this->t('Módulo de la clase regional'),
       '#empty_value' => '',
-      '#empty_option' => '- Selecione módulo -',
+      '#empty_option' => '- Seleccione módulo -',
       '#options' => $module_list,
       '#ajax' => [
         'callback' => [$this, 'changeIntegrationConfig'],
@@ -216,7 +216,7 @@ abstract class GenericGeneratorForm extends FormBase
       '#type' => 'select',
       '#title' => $this->t('Módulo donde se generará la clases'),
       '#empty_value' => '',
-      '#empty_option' => '- Selecione módulo -',
+      '#empty_option' => '- Seleccione módulo -',
       '#options' => $module_list,
       '#ajax' => [
         'callback' => [$this, 'changeIntegrationConfig'],
@@ -321,4 +321,63 @@ abstract class GenericGeneratorForm extends FormBase
 
   // Método que devuelve el tipo de servicio. Ejemplo (controller, block, form, rest )
   public abstract function typeOfFile();
+
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    if ($form_state->getValue('only_logic') == 0)
+      $this->validateRegionalInputs($form_state);
+    else {
+      $this->validateIntegrationInput($form_state);
+    }
+  }
+  protected function validateRegionalInputs(FormStateInterface $form_state) {
+    $module = $form_state->getValue('module');
+    $regional_service = $form_state->getValue('service_regional');
+    $class_regional = $form_state->getValue('class_regional');
+    $class_regional_logic = $form_state->getValue('class_regional_logic');
+    if ($module == '')
+      $form_state->setErrorByName('module', $this->t('Debe seleccionar un modulo.'));
+
+    if (str_replace(' ', '', $regional_service) != $regional_service) {
+      $form_state->setErrorByName('service_regional', $this->t('El id del servicio no puede contener espacios en blanco.'));
+    }
+    if ($class_regional == '') {
+      $form_state->setErrorByName('class_regional', $this->t('El nombre de la clase no puede ser vacio.'));
+    }
+    if ($class_regional_logic == '') {
+      $form_state->setErrorByName('class_regional_logic', $this->t('El nombre de la clase no puede ser vacio.'));
+    }
+  }
+  protected  function validateIntegrationInput(FormStateInterface $form_state) {
+    $module_int = $form_state->getValue('module_integration');
+    $class_integration = $form_state->getValue('class_integration');
+    $module_imp = $form_state->getValue('module_integration_logic');
+    $class_specific_logic = $form_state->getValue('class_integration_logic');
+    $service_int = $form_state->getValue('service_integration');
+    if ($module_int == '') {
+      $form_state->setErrorByName('module_integration', $this->t('Debe seleccionar un modulo.'));
+    }
+    if ($module_imp == '') {
+      $form_state->setErrorByName('module_integration_logic', $this->t('Debe seleccionar un modulo.'));
+    }
+    if ($class_integration == '') {
+      $form_state->setErrorByName('class_integration', $this->t('Debe introducir un nombre para la clase.'));
+    }
+    if ($class_specific_logic == '') {
+      $form_state->setErrorByName('class_integration_logic', $this->t('Debe introducir un nombre para la clase.'));
+    }
+    if ($service_int == '') {
+      $form_state->setErrorByName('service_integration', $this->t('Debe introducir un identificador valido.'));
+    }
+    if ($class_integration != '') {
+      $module_list = \Drupal::service('bits_developer.util.operation')->listModule();
+      $index = intval($module_int);
+      $path = str_replace(FileManager::PATH_PREFIX, $module_list[$index], $form_state->getValue('path_regional_logic'));
+      $file = DRUPAL_ROOT. '/modules/custom/' . $path . '/' . $class_integration . '.php';
+      $file_manager = \Drupal::service('bits_developer.file.manager');
+      $exist = $file_manager->fileExist(str_replace('\\','/',$file));
+      if (!$exist)
+        $form_state->setErrorByName('class_integration', 'La clase nombrada no existe en ese modulo');
+    }
+  }
+
 }
