@@ -110,13 +110,13 @@ class BlockGeneratorForm extends GenericGeneratorForm {
 
     }
     else{
-        $module = $form['module']['#options'][$form_state->getValue('module_integration')];
+        $logic_module = $form['module']['#options'][$form_state->getValue('module_integration_logic')];
         $service_integration = $form_state->getValue('service_integration');
         $class_integration = $form_state->getValue('class_integration');
         $class_integration_logic = $form_state->getValue('class_integration_logic');
         $builder_controller = \Drupal::service('bits_developer.integration-block.builder');
 
-        $builder_controller->addModule($module);
+        $builder_controller->addModule($logic_module);
         $builder_controller->addClassComments($class_integration, $block_id, $admin_label);
         $builder_controller->addClass($class_integration);
         $builder_controller->addIdentificator($service_integration);
