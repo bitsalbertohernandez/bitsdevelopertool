@@ -95,9 +95,8 @@ class BlockGeneratorForm extends GenericGeneratorForm {
 
     $admin_label = $form_state->getValue('admin_label');
 
-    $module = $form['module']['#options'][$form_state->getValue('module')];
-
     if ($form_state->getValue('only_logic') == 0) {
+        $module = $form['module']['#options'][$form_state->getValue('module')];
         $service_regional = $form_state->getValue('service_regional');
         $class_regional = $form_state->getValue('class_regional');
         $class_regional_logic = $form_state->getValue('class_regional_logic');
@@ -111,6 +110,7 @@ class BlockGeneratorForm extends GenericGeneratorForm {
 
     }
     else{
+        $module = $form['module']['#options'][$form_state->getValue('module_integration')];
         $service_integration = $form_state->getValue('service_integration');
         $class_integration = $form_state->getValue('class_integration');
         $class_integration_logic = $form_state->getValue('class_integration_logic');
