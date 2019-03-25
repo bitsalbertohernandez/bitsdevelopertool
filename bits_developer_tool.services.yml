@@ -35,6 +35,10 @@ services:
     class: Drupal\bits_developer_tool\Services\RegionalBlockBuilder
     argument: []
 
+  bits_developer.integration-block.builder:
+      class: Drupal\bits_developer_tool\Services\IntegrationBlockBuilder
+      argument: []
+
   bits_developer.reg-form.builder:
     class: Drupal\bits_developer_tool\Services\RegionalFormBuilder
     argument: []
@@ -42,3 +46,4 @@ services:
   bits_developer.int-form.builder:
     class: Drupal\bits_developer_tool\Services\IntegrationFormBuilder
     argument: []
+
