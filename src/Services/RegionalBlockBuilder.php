@@ -18,7 +18,8 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
    * @param $admin_label Internacionalization Block label.
    */
   public function addClassComments($class_name, $id_block, $admin_label) {
-    $this->block_generator->addClassCommentBlock($class_name, $id_block, $admin_label);
+    $this->block_generator->addClassCommentBlock($class_name, $id_block,
+      $admin_label);
   }
 
   /**
@@ -58,7 +59,8 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
    * @return array
    */
   public function createComments() {
-    $namespace = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::BLOCK));
+    $namespace = str_replace(FileManager::PATH_PREFIX, $this->module,
+      $this->namespace_path->getNameSpace(TypeOfFile::BLOCK));
     $this->block_generator->addUse($this->container_interface);
     $container = $this->container_interface . ' $container';
     return [
@@ -78,7 +80,8 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
    * @return array
    */
   public function setConfigComments() {
-    $namespace = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::BLOCK));
+    $namespace = str_replace(FileManager::PATH_PREFIX, $this->module,
+      $this->namespace_path->getNameSpace(TypeOfFile::BLOCK));
     $container = $this->container_interface . ' $container';
     return [
       "Set Config Method. \n",
@@ -96,7 +99,7 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
   public function generateContructBlockBaseClassBody() {
     $instance = "// Store our dependency. \n" . '$this->' . $this->regional_property . ' = $' . $this->regional_property . ';';
     $parent = "\n\n// Call parent construct method. \n" . 'parent::__construct(' . $this->configuration_prop . ', ' . $this->plugin_id_prop . ', ' . $this->plugin_definition_prop . ');';
-    $set_config = "\n\n// Set init config. \n" . '$this->'. $this->regional_property .'->setConfig($this, $this->configuration);';
+    $set_config = "\n\n// Set init config. \n" . '$this->' . $this->regional_property . '->setConfig($this, $this->configuration);';
     return $instance . $parent . $set_config;
   }
 
@@ -131,7 +134,11 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
    *
    * @return array
    */
-  public function constructArguments($config_instance, $config_class, $namespace_logic) {
+  public function constructArguments(
+    $config_instance,
+    $config_class,
+    $namespace_logic
+  ) {
     $this->block_generator->addUse($namespace_logic . "\\" . $this->logic_Class);
     return [
       ["name" => "configuration", "type" => "array"],
@@ -147,7 +154,8 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
    * @return array
    */
   public function setConfigArguments(&$block_generator) {
-    $namespace = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::BLOCK));
+    $namespace = str_replace(FileManager::PATH_PREFIX, $this->module,
+      $this->namespace_path->getNameSpace(TypeOfFile::BLOCK));
     $block_generator->addUse($namespace . "\\" . $this->class);
 
     return [
@@ -252,7 +260,11 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
    *
    * @return array
    */
-  public function generatePathAndCode($block_generator, $class, $is_base = TRUE) {
+  public function generatePathAndCode(
+    $block_generator,
+    $class,
+    $is_base = TRUE
+  ) {
     $code = $block_generator->generateClass($class);
     $path = $this->getPathByType($is_base);
     if (!$this->file_manager->pathExist($path)) {
@@ -277,10 +289,13 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
    * Build Files Function.
    */
   public function buildFiles() {
+    $hasBuild = FALSE;
     if ($this->generateBlockClass(TypeOfFile::BLOCK)) {
       $this->generateYAMLConfig();
       $this->generateBlockClass(TypeOfFile::BLOCK_LOGIC);
+      $hasBuild = TRUE;
     }
+    return $hasBuild;
   }
 
 }
