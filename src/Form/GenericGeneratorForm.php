@@ -109,14 +109,22 @@ abstract class GenericGeneratorForm extends FormBase
       '#title' => $this->t('Identificador del servicio'),
       '#default_value' => '',
       '#description' => t("El identificador no debe contener espacios no caracteres extraños"),
-      //'#required' => true
+      '#required' => true,
+      '#attributes' => [
+        'pattern' => '[a-z üÜñÑáéíóúÁÉÍÓÚ.-_A-Z0-9]+',
+        'title' => t('Por favor ingrese solo caracteres alfanuméricos y los caracteres especiales .  _  -'),
+      ]
     ];
     $form['generator_container']['regional']['class_regional'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Nombre de la clase'),
       '#default_value' => '',
       '#description' => t("Nombre con el que se generará la clase."),
-      //'#required' => true
+      '#required' => true,
+      '#attributes' => [
+        'pattern' => '[a-z üÜñÑáéíóúÁÉÍÓÚA-Z0-9]+',
+        'title' => t('Por favor ingrese solo caracteres alfanuméricos sin caracteres especiales.'),
+      ],
     ];
 
     // Tabla de las clases lógicas regionales.
@@ -189,15 +197,23 @@ abstract class GenericGeneratorForm extends FormBase
       '#type' => 'textfield',
       '#title' => $this->t('Identificador del servicio regional'),
       '#default_value' => '',
-      '#description' => t("El identificador no debe contener espacios, ni caracteres extraños"),
-      //'#required' => true
+      '#description' => t("El identificador no debe contener espacios"),
+      '#required' => true,
+      '#attributes' => [
+        'pattern' => '[a-z üÜñÑáéíóúÁÉÍÓÚ-_A-Z0-9]+',
+        'title' => t('Por favor ingrese solo caracteres alfanuméricos y los caracteres especiales _  -'),
+      ]
     ];
     $form['generator_container2']['integration']['class_integration'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Nombre de la clase'),
       '#default_value' => '',
       '#description' => t("Nombre de la clase lógica regional."),
-      //'#required' => true
+      '#required' => true,
+      '#attributes' => [
+        'pattern' => '[a-z üÜñÑáéíóúÁÉÍÓÚA-Z0-9]+',
+        'title' => t('Por favor ingrese solo caracteres alfanuméricos sin caracteres especiales.'),
+      ]
     ];
 
       // Tabla de las clases lógicas de integration.

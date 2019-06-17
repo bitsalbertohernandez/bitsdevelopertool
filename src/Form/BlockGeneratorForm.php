@@ -37,6 +37,11 @@ class BlockGeneratorForm extends GenericGeneratorForm {
       '#title' => $this->t('Identificador del bloque'),
       '#default_value' => '',
       '#description' => t("Machine name o idenficador del bloque " . $this->className()),
+      '#required' => true,
+      '#attributes' => [
+        'pattern' => '[a-z üÜñÑáéíóúÁÉÍÓÚ-_A-Z0-9]+',
+        'title' => t('Por favor ingrese solo caracteres alfanuméricos sin caracteres extraños.'),
+      ]
     ];
 
     // Adicionar campo Admin Label.
@@ -45,6 +50,11 @@ class BlockGeneratorForm extends GenericGeneratorForm {
       '#title' => $this->t('Admin Label'),
       '#default_value' => '',
       '#description' => t("Nombre del Bloque Admin Label" . $this->className()),
+      '#required' => true,
+      '#attributes' => [
+        'pattern' => '[a-z üÜñÑáéíóúÁÉÍÓÚA-Z0-9]+',
+        'title' => t('Por favor ingrese solo caracteres alfanuméricos sin caracteres extraños.'),
+      ]
     ];
 
     // A partir de aqui van los campos propios de la clase del block
