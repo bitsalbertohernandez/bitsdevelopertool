@@ -48,7 +48,7 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
       "@param array $this->configuration_prop \n Block configuration.",
       "@param string $this->plugin_id_prop \n Block identification.",
       "@param mixed $this->plugin_definition_prop \n Plugin definition.",
-      "@param $namespace $configuration_instance \n Logic class of block.",
+      "@param \\$namespace $configuration_instance \n Logic class of block.",
     ];
   }
 
@@ -82,7 +82,7 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
     $container = $this->container_interface . ' $container';
     return [
       "Set Config Method. \n",
-      "@param $namespace\\$this->class $$this->logic_instance_property",
+      "@param \\$namespace\\$this->class $$this->logic_instance_property",
       "@param $$this->logic_config_property",
       "\n@return void",
     ];
@@ -94,9 +94,9 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
    * @return string
    */
   public function generateContructBlockBaseClassBody() {
-    $instance = "// Store our dependency. \n" . '$this->' . $this->regional_property . ' = $' . $this->regional_property;
+    $instance = "// Store our dependency. \n" . '$this->' . $this->regional_property . ' = $' . $this->regional_property . ';';
     $parent = "\n\n// Call parent construct method. \n" . 'parent::__construct(' . $this->configuration_prop . ', ' . $this->plugin_id_prop . ', ' . $this->plugin_definition_prop . ');';
-    $set_config = "\n\n// Set init config. \n" . '$this->configurationInstance->setConfig($this, $this->configuration);';
+    $set_config = "\n\n// Set init config. \n" . '$this->'. $this->regional_property .'->setConfig($this, $this->configuration);';
     return $instance . $parent . $set_config;
   }
 
@@ -223,7 +223,7 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
    */
   public function getBodyBlockBaseClassWithConfig($type) {
     $body = 'if (method_exists($this->' . $this->regional_property . ', "block' . $type . '")) {'
-      . "\n" . '   return $this->' . $this->regional_property . '->block' . $type . '($form, $form_state, $this->' . $this->configuration_prop . ');'
+      . "\n" . '   return $this->' . $this->regional_property . '->block' . $type . '($form, $form_state, $this->' . $this->configuration_instance . ');'
       . "\n}\n" . 'return parent::block' . $type . '($form, $form_state);';
 
     return $body;
@@ -237,8 +237,8 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
    */
   public function getBodyBuildMethodBase() {
     $body = 'if (method_exists($this->' . $this->regional_property . ', "build")) {'
-      . "\n" . '   return $this->' . $this->regional_property . '->build($this, $this->' . $this->configuration_prop . ');'
-      . "\n}\n" . 'return parent::build($this, $this->' . $this->configuration_prop . ');';
+      . "\n" . '   return $this->' . $this->regional_property . '->build($this, $this->' . $this->configuration_instance . ');'
+      . "\n}\n" . 'return parent::build($this, $this->' . $this->configuration_instance . ');';
 
     return $body;
   }

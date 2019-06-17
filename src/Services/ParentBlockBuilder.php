@@ -27,6 +27,8 @@ class ParentBlockBuilder {
 
   protected $configuration_prop = '$configuration';
 
+  protected $configuration_instance = 'configuration';
+
   protected $plugin_id_prop = '$plugin_id';
 
   protected $plugin_definition_prop = '$plugin_definition';
@@ -262,9 +264,9 @@ class ParentBlockBuilder {
    * @return string
    */
   public function getBodyBuildMethodLogic() {
-    $inicial = '$this->' . $this->logic_instance_property . " = &$this->logic_instance_property;\n" .
+    $inicial = '$this->' . $this->logic_instance_property . " = &$$this->logic_instance_property;\n" .
       '$this->' . str_replace("$", "", $this->configuration_prop)
-      . " = &$this->logic_config_property;\n";
+      . " = &$$this->logic_config_property;\n";
 
     $build = "\n// Here define " . '$build' . " variable with theme and library.\n" . '$build = [];' .
       "\n" . '$this->instance->setValue("build", $build);';
@@ -465,27 +467,6 @@ class ParentBlockBuilder {
       . "\nreturn " . '$form;';
     return $return;
   }
-
-
-
-  // /**
-  //  * Array of Create Methods Block Comments
-  //  *
-  //  * @return array
-  // */
-  // public function createComments() {
-  //     $namespace = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::BLOCK));
-  //     $this->block_generator->addUse($this->container_interface);
-  //     $container = $this->container_interface . ' $container';
-  //     return [
-  //         "Create Block Class. \n",
-  //         "@param $namespace\\$this->container_name \n Block container.",
-  //         "@param array $this->configuration_prop \n Block configuration.",
-  //         "@param string $this->plugin_id_prop \n Plugin identification.",
-  //         "@param mixed $this->plugin_definition_prop \n Plugin definition.",
-  //         "\n\n@return static",
-  //     ];
-  // }
 
   /**
    * Create Block Class Logic.
