@@ -4,8 +4,7 @@ namespace Drupal\bits_developer_tool\Common;
 use Symfony\Component\Yaml\Yaml;
 
 
-class Util
-{
+class Util {
 
   /**
    * Obtener el listado de módulos.
@@ -13,14 +12,16 @@ class Util
    * @return array
    *  Retorna un arreglo con los nombres de los módulos.
    */
-  public function listModule()
-  {
-    $exclude_package = ['Core', 'Field types', 'Other'];
-    $exclude_module = ['bits_developer_tool'];
+  public function listModule() {
+    $exclude = \Drupal::service('bits_developer.exclude');
+    $exclude_package = $exclude->getPackages();
+    $exclude_module = $exclude->getModules();
     $custom_modules = [];
     $modules = system_get_info('module');
     foreach ($modules as $key => $module) {
-      if (!in_array($module['package'], $exclude_package) && !in_array($key, $exclude_module)) {
+      if (in_array($module['package'], $exclude_package) || in_array( $module['name'], $exclude_module)) {
+        continue;
+      } else{
         array_push($custom_modules, $key);
       }
     }

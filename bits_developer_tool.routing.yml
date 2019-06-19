@@ -27,3 +27,10 @@ bits_developer_tool.generator_block_form:
   options:
     _admin_route: TRUE
 
+bits_developer_tool.autocomplete_module:
+  path: '/module-load-list-match/{count}'
+  defaults:
+    _controller: 'Drupal\bits_developer_tool\Controller\AutocompleteModuleController::loadModules'
+    _format: json
+  requirements:
+    _access: 'TRUE'
