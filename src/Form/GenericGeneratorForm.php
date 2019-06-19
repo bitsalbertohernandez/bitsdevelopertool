@@ -7,9 +7,11 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\bits_developer_tool\Common\FileManager;
 use Drupal\bits_developer_tool\Common\TypeOfFile;
+use Drupal\bits_developer_tool\Common\MessageType;
+use Drupal\bits_developer_tool\Common\ClassName;
 
-abstract class GenericGeneratorForm extends FormBase
-{
+abstract class GenericGeneratorForm extends FormBase {
+  protected $type_sms = MessageType::STATUS;
   private $global_config;
   /**
    * @var \Drupal\bits_developer_tool\Common\NameSpacePathConfig
@@ -23,8 +25,7 @@ abstract class GenericGeneratorForm extends FormBase
   /**
    * {@inheritdoc}.
    */
-  public function buildForm(array $form, FormStateInterface $form_state)
-  {
+  public function buildForm(array $form, FormStateInterface $form_state) {
     $this->global_config = \Drupal::config(FileManager::ID_CONFIG);
 
     $this->namespace_path_config = \Drupal::service('bits_developer.namespace.path');
@@ -263,8 +264,7 @@ abstract class GenericGeneratorForm extends FormBase
    * @param FormStateInterface $form_state
    * @return void
    */
-  public function changeRegionalConfig(array &$form, FormStateInterface &$form_state)
-  {
+  public function changeRegionalConfig(array &$form, FormStateInterface &$form_state) {
     $module_name = $form_state->getTriggeringElement()['#options'][$form_state->getValue('module')];
 
     if (isset($module_name)) {
@@ -291,8 +291,7 @@ abstract class GenericGeneratorForm extends FormBase
    * @param FormStateInterface $form_state
    * @return void
    */
-  public function changeIntegrationConfig(array &$form, FormStateInterface &$form_state)
-  {
+  public function changeIntegrationConfig(array &$form, FormStateInterface &$form_state) {
     $module = $form_state->getTriggeringElement()['#options'][$form_state->getValue('module_integration')];
     $module_logic = $form_state->getTriggeringElement()['#options'][$form_state->getValue('module_integration_logic')];
 
@@ -311,8 +310,7 @@ abstract class GenericGeneratorForm extends FormBase
     return $form['generator_container2'];
   }
 
-  public function submitForm(array &$form, FormStateInterface $form_state)
-  {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
   }
 
@@ -321,4 +319,39 @@ abstract class GenericGeneratorForm extends FormBase
 
   // Método que devuelve el tipo de servicio. Ejemplo (controller, block, form, rest )
   public abstract function typeOfFile();
+
+  // Mostrar mensajes de confirmación
+  public function confirmationMessage($sms) {
+    drupal_set_message($sms,$this->type_sms);
+  }
+
+  // Mensaje satisfactorio por defecto.
+  public function defaultSucessMessage(){
+    return "Se generó satisfactoriamente los archivos del ".$this->classNameToLower($this->typeOfFile());
+  }
+
+  // Mensaje de error por defecto.
+  public function defaultErrorMessage(){
+    return "Ocurrió un error al generar los archivos del ".$this->classNameToLower($this->typeOfFile());
+  }
+
+  // Retornar en minúscula el nombre de la clase del tipo de archivo.
+  private function classNameToLower($type_of_file) {
+    switch ($type_of_file) {
+      case TypeOfFile::BLOCK:
+        $file_name = strtolower(ClassName::BLOCK);
+        break;
+      case TypeOfFile::FORM:
+        $file_name = strtolower(ClassName::FORM);
+        break;
+      case TypeOfFile::SERVICE:
+        $file_name = strtolower(ClassName::REST);
+        break;
+
+      default:
+        $file_name = strtolower(ClassName::CONTROLLER);
+        break;
+    }
+    return $file_name;
+  }
 }
