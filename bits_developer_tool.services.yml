@@ -42,3 +42,12 @@ services:
   bits_developer.int-form.builder:
     class: Drupal\bits_developer_tool\Services\IntegrationFormBuilder
     argument: []
+
+  bits_developer.reg-rest-resource.builder:
+    class: Drupal\bits_developer_tool\Services\RegionalServiceBuilder
+    argument: []
+
+  bits_developer.service.generator:
+    class: Drupal\bits_developer_tool\Generators\ServiceGenerator
+    argument: []
+

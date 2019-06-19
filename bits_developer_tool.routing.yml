@@ -35,3 +35,10 @@ bits_developer_tool.generator_block_form:
   options:
     _admin_route: TRUE
 
+bits_developer_tool.generator_service_form:
+  path: '/services'
+  defaults:
+    _form: '\Drupal\bits_developer_tool\Form\ServiceGeneratorForm'
+    _title: 'Formulario para la Generación de Servicios rest'
+  requirements:
+    _permission: 'access content'
