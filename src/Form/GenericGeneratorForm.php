@@ -327,11 +327,13 @@ abstract class GenericGeneratorForm extends FormBase {
 
   // Mensaje satisfactorio por defecto.
   public function defaultSucessMessage(){
+    $this->type_sms = MessageType::STATUS;
     return "Se generó satisfactoriamente los archivos del ".$this->classNameToLower($this->typeOfFile());
   }
 
   // Mensaje de error por defecto.
   public function defaultErrorMessage(){
+    $this->type_sms = MessageType::ERROR;
     return "Ocurrió un error al generar los archivos del ".$this->classNameToLower($this->typeOfFile());
   }
 

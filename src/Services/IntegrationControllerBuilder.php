@@ -19,7 +19,7 @@ class IntegrationControllerBuilder extends ControllerBuilder {
   }
 
   public function buildFiles() {
-    $this->generateControllerLogicClass();
+    return $this->generateControllerLogicClass();
   }
 
   private function generateControllerLogicClass() {

@@ -24,8 +24,9 @@ class RegionalControllerBuilder extends ControllerBuilder {
   public function buildFiles() {
     if ($this->generateControllerClass()) {
       $this->generateYAMLConfig();
-      $this->generateControllerLogicClass();
+      return $this->generateControllerLogicClass();
     }
+    return FALSE;
   }
 
   private function generateControllerClass() {
