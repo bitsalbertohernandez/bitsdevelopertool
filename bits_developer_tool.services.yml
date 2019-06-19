@@ -47,3 +47,7 @@ services:
     class: Drupal\bits_developer_tool\Services\IntegrationFormBuilder
     argument: []
 
+
+  bits_developer.exclude:
+    class: Drupal\bits_developer_tool\Common\ExcludeModuleAndPackage
+    argument: []

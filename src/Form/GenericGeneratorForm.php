@@ -21,11 +21,13 @@ abstract class GenericGeneratorForm extends FormBase {
   private $namespace_logic;
   private $path;
   private $path_logic;
+  protected $modules;
 
   /**
    * {@inheritdoc}.
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+    $this->modules = \Drupal::service('bits_developer.util.operation')->listModule();
     $this->global_config = \Drupal::config(FileManager::ID_CONFIG);
 
     $this->namespace_path_config = \Drupal::service('bits_developer.namespace.path');
@@ -36,22 +38,19 @@ abstract class GenericGeneratorForm extends FormBase {
     $this->namespace_logic = $this->namespace_path_config->getNameSpaceLogic($this->typeOfFile());
     $this->path_logic = $this->namespace_path_config->getPathLogic($this->typeOfFile());
 
-    $module_list = \Drupal::service('bits_developer.util.operation')->listModule();
-
-
     // Checbox para saber si es integración.
     $form['only_logic'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Generar integración'),
     ];
+    $module_list = [];
 
      // Select de módulos.
     $form['module'] = [
-      '#type' => 'select',
+      '#type' => 'textfield',
       '#title' => $this->t('Módulo donde se generarán los archivos'),
-      '#empty_value' => '',
-      '#empty_option' => '- Seleccione módulo -',
-      '#options' => $module_list,
+      '#autocomplete_route_name' => 'bits_developer_tool.autocomplete_module',
+      '#autocomplete_route_parameters' => array('count' => 10),
       '#states' => [
         'invisible' => [
           ':input[name="only_logic"]' => ['checked' => true],
@@ -59,9 +58,10 @@ abstract class GenericGeneratorForm extends FormBase {
       ],
       '#ajax' => [
         'callback' => [$this, 'changeRegionalConfig'],
-        'event' => 'change',
+        'event' => 'autocompleteclose',
         'wrapper' => 'replace_container',
       ],
+
     ];
 
     // Contenedor de las tablas regionales.
@@ -167,14 +167,13 @@ abstract class GenericGeneratorForm extends FormBase {
     ];
     // todo: ver como filtro por el paquete regional
     $form['generator_container2']['integration']['module_integration'] = [
-      '#type' => 'select',
+      '#type' => 'textfield',
       '#title' => $this->t('Módulo de la clase regional'),
-      '#empty_value' => '',
-      '#empty_option' => '- Seleccione módulo -',
-      '#options' => $module_list,
+      '#autocomplete_route_name' => 'bits_developer_tool.autocomplete_module',
+      '#autocomplete_route_parameters' => array('count' => 10),
       '#ajax' => [
         'callback' => [$this, 'changeIntegrationConfig'],
-        'event' => 'change',
+        'event' => 'autocompleteclose',
         'wrapper' => 'replace_container2',
       ],
     ];
@@ -214,14 +213,13 @@ abstract class GenericGeneratorForm extends FormBase {
     ];
 
     $form['generator_container2']['integration_logic']['module_integration_logic'] = [
-      '#type' => 'select',
+      '#type' => 'textfield',
       '#title' => $this->t('Módulo donde se generará la clases'),
-      '#empty_value' => '',
-      '#empty_option' => '- Seleccione módulo -',
-      '#options' => $module_list,
+      '#autocomplete_route_name' => 'bits_developer_tool.autocomplete_module',
+      '#autocomplete_route_parameters' => array('count' => 10),
       '#ajax' => [
         'callback' => [$this, 'changeIntegrationConfig'],
-        'event' => 'change',
+        'event' => 'autocompleteclose',
         'wrapper' => 'replace_container2',
       ],
     ];
@@ -265,9 +263,9 @@ abstract class GenericGeneratorForm extends FormBase {
    * @return void
    */
   public function changeRegionalConfig(array &$form, FormStateInterface &$form_state) {
-    $module_name = $form_state->getTriggeringElement()['#options'][$form_state->getValue('module')];
+    $module_name = $form_state->getValue('module');
 
-    if (isset($module_name)) {
+    if (isset($module_name) && in_array($module_name, $this->modules)) {
 
       $form['generator_container']['regional']['name_space_regional']['#value'] = str_replace(FileManager::PATH_PREFIX, $module_name, $this->namespace);
       $form['generator_container']['regional']['path_regional']['#value'] = str_replace(FileManager::PATH_PREFIX, $module_name, $this->path);
@@ -292,17 +290,17 @@ abstract class GenericGeneratorForm extends FormBase {
    * @return void
    */
   public function changeIntegrationConfig(array &$form, FormStateInterface &$form_state) {
-    $module = $form_state->getTriggeringElement()['#options'][$form_state->getValue('module_integration')];
-    $module_logic = $form_state->getTriggeringElement()['#options'][$form_state->getValue('module_integration_logic')];
+    $module = $form_state->getValue('module_integration');
+    $module_logic = $form_state->getValue('module_integration_logic');
 
-    if (isset($module)) {
+    if (isset($module) && in_array( $module, $this->modules)) {
 
       $form['generator_container2']['integration']['name_space_integration']['#value'] = str_replace(FileManager::PATH_PREFIX, $module, $this->namespace_logic);
       $form['generator_container2']['integration']['path_integration']['#value'] = str_replace(FileManager::PATH_PREFIX, $module, $this->path_logic);
     }
 
       // Re emplazando el nombre del módulo en las rutas reginales lógicas.
-    if (isset($module_logic)) {
+    if (isset($module_logic) && in_array( $module_logic, $this->modules)) {
       $form['generator_container2']['integration_logic']['name_space_integration_logic']['#value'] = str_replace(FileManager::PATH_PREFIX, $module_logic, $this->namespace_logic);
       $form['generator_container2']['integration_logic']['path_integration_logic']['#value'] = str_replace(FileManager::PATH_PREFIX, $module_logic, $this->path_logic);
     }
@@ -379,7 +377,7 @@ abstract class GenericGeneratorForm extends FormBase {
   }
 
 
-  // Mostrar mensajes de confirmación
+  // Mostrar mensajes de confirmación.
   public function confirmationMessage($sms) {
     drupal_set_message($sms,$this->type_sms);
   }
