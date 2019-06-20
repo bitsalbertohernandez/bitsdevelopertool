@@ -321,19 +321,19 @@ abstract class GenericGeneratorForm extends FormBase {
   public abstract function typeOfFile();
 
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    if ($form_state->getValue('only_logic') == 0)
+    if ($form_state->getValue( 'only_logic' . $this->typeOfFile()) == 0)
       $this->validateRegionalInputs($form_state);
     else {
       $this->validateIntegrationInput($form_state);
     }
   }
   protected function validateRegionalInputs(FormStateInterface $form_state) {
-    $module = $form_state->getValue('module');
+    $module = $form_state->getValue( 'module' . $this->typeOfFile());
     $regional_service = $form_state->getValue('service_regional');
     $class_regional = $form_state->getValue('class_regional');
     $class_regional_logic = $form_state->getValue('class_regional_logic');
     if ($module == '')
-      $form_state->setErrorByName('module', $this->t('Debe seleccionar un modulo.'));
+      $form_state->setErrorByName( 'module' . $this->typeOfFile(), $this->t('Debe seleccionar un modulo.'));
 
     if (str_replace(' ', '', $regional_service) != $regional_service) {
       $form_state->setErrorByName('service_regional', $this->t('El id del servicio no puede contener espacios en blanco.'));
