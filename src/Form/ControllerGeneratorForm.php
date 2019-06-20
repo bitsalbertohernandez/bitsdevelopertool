@@ -33,7 +33,7 @@ class ControllerGeneratorForm extends GenericGeneratorForm
   {
     if ($form_state->getValue('only_logic') == 0) {
 
-      $module = $form['module']['#options'][$form_state->getValue('module')];
+      $module = $form_state->getValue('module');
 
       $class_regional = $form_state->getValue('class_regional');
 
@@ -50,8 +50,8 @@ class ControllerGeneratorForm extends GenericGeneratorForm
       $builder_controller->buildFiles();
     }
     else{
-      $module = $form['generator_container2']['integration']['module_integration']['#options'][$form_state->getValue('module_integration')];
-      $logic_module = $form['generator_container2']['integration_logic']['module_integration_logic']['#options'][$form_state->getValue('module_integration_logic')];
+      $module = $form_state->getValue('module_integration');
+      $logic_module = $form_state->getValue('module_integration_logic');
 
       $class = $form_state->getValue('class_integration');
       $logic_class = $form_state->getValue('class_integration_logic');
