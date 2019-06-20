@@ -10,6 +10,7 @@ use Drupal\bits_developer_tool\Services\ParentBlockBuilder;
 
 class IntegrationBlockBuilder extends ParentBlockBuilder {
 
+  protected $module_regional;
   /**
    * Add Class Comments to Blocks
    *
@@ -35,6 +36,14 @@ class IntegrationBlockBuilder extends ParentBlockBuilder {
     $this->block_generator->addImplement($namespace . "\\" . $this->interface_name);
   }
 
+  /**
+   * Add Module Function.
+   *
+   * @param $module
+   */
+  public function addModuleRegional($module) {
+    $this->module_regional = $module;
+  }
 
   /**
    * Array of Construct Block Comments
@@ -58,11 +67,12 @@ class IntegrationBlockBuilder extends ParentBlockBuilder {
    * @return array
    */
   public function setConfigComments() {
-    $namespace = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::BLOCK));
+    $namespace = str_replace(FileManager::PATH_PREFIX, $this->module_regional,
+      $this->namespace_path->getNameSpaceLogic(TypeOfFile::BLOCK));
     $container = $this->container_interface . ' $container';
     return [
       "Set Config Method. \n",
-      "@param $namespace\\$this->class $$this->logic_instance_property",
+      "@param \\$namespace\\$this->class $$this->logic_instance_property",
       "@param $$this->logic_config_property",
       "\n@return void",
     ];
@@ -104,7 +114,9 @@ class IntegrationBlockBuilder extends ParentBlockBuilder {
    * @return array
    */
   public function setConfigArguments(&$block_generator) {
-    $namespace = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::BLOCK));
+
+    $namespace = str_replace(FileManager::PATH_PREFIX, $this->module_regional, $this->namespace_path->getNameSpace(TypeOfFile::BLOCK));
+
     $block_generator->addUse($namespace . "\\" . $this->class);
 
     return [

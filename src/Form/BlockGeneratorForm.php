@@ -37,12 +37,14 @@ class BlockGeneratorForm extends GenericGeneratorForm {
       '#title' => $this->t('Identificador del bloque'),
       '#default_value' => '',
       '#description' => t("Machine name o idenficador del bloque " . $this->className()),
-      '#required' => true,
       '#states' => [
         'disabled' => [
-          ':input[name="only_logic"]' => ['checked' => true],
+          ':input[name="only_logic"]' => ['checked' => TRUE],
         ],
-      ]
+        'invisible' => [
+          ':input[name="only_logic"]' => ['checked' => TRUE],
+        ],
+      ],
     ];
 
     // Adicionar campo Admin Label.
@@ -51,10 +53,12 @@ class BlockGeneratorForm extends GenericGeneratorForm {
       '#title' => $this->t('Admin Label'),
       '#default_value' => '',
       '#description' => t("Nombre del Bloque Admin Label" . $this->className()),
-      '#required' => true,
       '#states' => [
         'disabled' => [
-          ':input[name="only_logic"]' => ['checked' => true],
+          ':input[name="only_logic"]' => ['checked' => TRUE],
+        ],
+        'invisible' => [
+          ':input[name="only_logic"]' => ['checked' => TRUE],
         ],
       ],
     ];
@@ -90,6 +94,32 @@ class BlockGeneratorForm extends GenericGeneratorForm {
     return $form;
   }
 
+
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    parent::validateForm($form, $form_state);
+
+    if ($form_state->getValue('only_logic') == 0) {
+      $this->regionalInputsValidation($form_state);
+    }
+    else {
+      $this->integrationInputValidation($form_state);
+    }
+  }
+
+  protected function regionalInputsValidation(FormStateInterface $form_state) {
+
+    $admin_label = $form_state->getValue('admin_label');
+
+    if ($admin_label == '') {
+      $form_state->setErrorByName('admin_label',
+        $this->t('El Admin Label no puede ser vacio.'));
+    }
+  }
+
+  protected function integrationInputValidation(FormStateInterface $form_state) {
+
+  }
+
   /**
    * Submit del bloque
    */
@@ -107,8 +137,9 @@ class BlockGeneratorForm extends GenericGeneratorForm {
 
     $admin_label = $form_state->getValue('admin_label');
 
+
     if ($form_state->getValue('only_logic') == 0) {
-      $module = $form['module']['#options'][$form_state->getValue('module')];
+      $module = $form_state->getValue('module');
       $service_regional = $form_state->getValue('service_regional');
       $class_regional = $form_state->getValue('class_regional');
       $class_regional_logic = $form_state->getValue('class_regional_logic');
@@ -123,13 +154,15 @@ class BlockGeneratorForm extends GenericGeneratorForm {
 
     }
     else {
-      $logic_module = $form['module']['#options'][$form_state->getValue('module_integration_logic')];
+      $module_integration = $form_state->getValue('module_integration');
+      $logic_module = $form_state->getValue('module_integration_logic');
       $service_integration = $form_state->getValue('service_integration');
       $class_integration = $form_state->getValue('class_integration');
       $class_integration_logic = $form_state->getValue('class_integration_logic');
       $builder_controller = \Drupal::service('bits_developer.integration-block.builder');
 
       $builder_controller->addModule($logic_module);
+      $builder_controller->addModuleRegional($module_integration);
       $builder_controller->addClassComments($class_integration, $block_id,
         $admin_label);
       $builder_controller->addClass($class_integration);

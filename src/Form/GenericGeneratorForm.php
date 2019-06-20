@@ -110,9 +110,11 @@ abstract class GenericGeneratorForm extends FormBase {
       '#title' => $this->t('Identificador del servicio'),
       '#default_value' => '',
       '#description' => t("El identificador no debe contener espacios no caracteres extraños"),
-      '#required' => true,
       '#states' => [
         'disabled' => [
+          ':input[name="only_logic"]' => ['checked' => true],
+        ],
+        'invisible' => [
           ':input[name="only_logic"]' => ['checked' => true],
         ],
       ],
@@ -128,9 +130,11 @@ abstract class GenericGeneratorForm extends FormBase {
       '#title' => $this->t('Nombre de la clase'),
       '#default_value' => '',
       '#description' => t("Nombre con el que se generará la clase."),
-      '#required' => true,
       '#states' => [
         'disabled' => [
+          ':input[name="only_logic"]' => ['checked' => true],
+        ],
+        'invisible' => [
           ':input[name="only_logic"]' => ['checked' => true],
         ],
       ],
@@ -173,9 +177,11 @@ abstract class GenericGeneratorForm extends FormBase {
       '#title' => $this->t('Nombre de la clase'),
       '#default_value' => '',
       '#description' => t("Nombre con el que se generará la clase."),
-      '#required' => true,
       '#states' => [
         'disabled' => [
+          ':input[name="only_logic"]' => ['checked' => true],
+        ],
+        'invisible' => [
           ':input[name="only_logic"]' => ['checked' => true],
         ],
       ],
@@ -223,9 +229,11 @@ abstract class GenericGeneratorForm extends FormBase {
       '#title' => $this->t('Identificador del servicio regional'),
       '#default_value' => '',
       '#description' => t("El identificador no debe contener espacios"),
-      '#required' => true,
       '#states' => [
         'disabled' => [
+          ':input[name="only_logic"]' => ['checked' => false],
+        ],
+        'invisible' => [
           ':input[name="only_logic"]' => ['checked' => false],
         ],
       ],
@@ -241,9 +249,11 @@ abstract class GenericGeneratorForm extends FormBase {
       '#title' => $this->t('Nombre de la clase'),
       '#default_value' => '',
       '#description' => t("Nombre de la clase lógica regional."),
-      '#required' => true,
       '#states' => [
         'disabled' => [
+          ':input[name="only_logic"]' => ['checked' => false],
+        ],
+        'invisible' => [
           ':input[name="only_logic"]' => ['checked' => false],
         ],
       ],
@@ -298,9 +308,11 @@ abstract class GenericGeneratorForm extends FormBase {
       '#title' => $this->t('Nombre de la clase'),
       '#default_value' => '',
       '#description' => t("Nombre con el que se generará la clase."),
-      '#required' => true,
       '#states' => [
         'disabled' => [
+          ':input[name="only_logic"]' => ['checked' => false],
+        ],
+        'invisible' => [
           ':input[name="only_logic"]' => ['checked' => false],
         ],
       ],
@@ -470,7 +482,7 @@ abstract class GenericGeneratorForm extends FormBase {
     if ($class_integration != '') {
       $module_list = \Drupal::service('bits_developer.util.operation')->listModule();
       $index = intval($module_int);
-      $path = str_replace(FileManager::PATH_PREFIX, $module_list[$index], $form_state->getValue('path_regional_logic'));
+      $path = str_replace(FileManager::PATH_PREFIX, $module_int, $form_state->getValue('path_regional_logic'));
       $file = DRUPAL_ROOT. '/modules/custom/' . $path . '/' . $class_integration . '.php';
       $file_manager = \Drupal::service('bits_developer.file.manager');
       $exist = $file_manager->fileExist(str_replace('\\','/',$file));
@@ -478,5 +490,4 @@ abstract class GenericGeneratorForm extends FormBase {
         $form_state->setErrorByName('class_integration', 'La clase nombrada no existe en ese modulo');
     }
   }
-
 }
