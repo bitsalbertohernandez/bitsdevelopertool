@@ -22,9 +22,9 @@ class AutocompleteModuleController extends ControllerBase {
             'value' => $module,
             'label' => $module,
           ]
-        );
-      }
+        );         
       $count--;
+      }
     }
     return new JsonResponse( $result);
    }
