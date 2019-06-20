@@ -1,0 +1,13 @@
+<!-- Tab links -->
+<div class="tab">
+  {% for form in forms%}
+    <button class="tablinks" id="defaulttab" onclick="changeTab(event, '{{form.id}}')">{{form.title}}</button>
+  {% endfor %}
+</div>
+
+{% for form in forms%}
+  <div id="{{form.id}}" class="tabcontent">
+    {{ form.form }}
+  </div>
+{% endfor %}
+
