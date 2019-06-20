@@ -109,10 +109,15 @@ class BlockGeneratorForm extends GenericGeneratorForm {
   protected function regionalInputsValidation(FormStateInterface $form_state) {
 
     $admin_label = $form_state->getValue('admin_label');
+    $block_id = $form_state->getValue('block_id');
 
     if ($admin_label == '') {
       $form_state->setErrorByName('admin_label',
         $this->t('El Admin Label no puede ser vacio.'));
+    }
+    if ($block_id == '') {
+      $form_state->setErrorByName('block_id',
+        $this->t('El Identificador del bloque no puede ser vacio.'));
     }
   }
 

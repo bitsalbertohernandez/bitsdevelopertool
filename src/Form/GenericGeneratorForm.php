@@ -448,9 +448,14 @@ abstract class GenericGeneratorForm extends FormBase {
     if ($module == '')
       $form_state->setErrorByName('module', $this->t('Debe seleccionar un modulo.'));
 
+    if ($regional_service == '') {
+      $form_state->setErrorByName('service_regional', $this->t('El id del servicio no puede ser vacío.'));
+    }
+
     if (str_replace(' ', '', $regional_service) != $regional_service) {
       $form_state->setErrorByName('service_regional', $this->t('El id del servicio no puede contener espacios en blanco.'));
     }
+
     if ($class_regional == '') {
       $form_state->setErrorByName('class_regional', $this->t('El nombre de la clase no puede ser vacio.'));
     }
