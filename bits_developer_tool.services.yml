@@ -30,3 +30,7 @@ services:
   bits_developer.reg-block.builder:
     class: Drupal\bits_developer_tool\Services\RegionalBlockBuilder
     argument: []
+
+  bits_developer.exclude:
+    class: Drupal\bits_developer_tool\Common\ExcludeModuleAndPackage
+    argument: []
