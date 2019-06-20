@@ -31,7 +31,26 @@ class GeneralConfigForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('bits_developer_tool.generalconfig');
-    
+
+    // Configuración para los paquetes que no se desean mostrar.
+    $form['exclude_package'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Paquetes a excluir'),
+      '#maxlength' => 255,
+      '#description' => $this->t('Nombre de los paquetes a excluir separados por ","'),
+      '#size' => 60,
+      '#require' => TRUE,
+      '#default_value' => $config->get('exclude_package') != null ? $config->get('exclude_package') : "Core",
+    ];
+    $form['exclude_module'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Módulos a excluir'),
+      '#maxlength' => 255,
+      '#description' => $this->t('Nombre de los módulos a excluir separados por ","'),
+      '#size' => 60,
+      '#require' => TRUE,
+      '#default_value' => $config->get('exclude_module') != null ? $config->get('exclude_module') : "bits_developer_tool",
+    ];
     // Campos para guadar Controladores.
     $form ['details_controllers'] = [
       '#type' => 'details',
@@ -222,7 +241,7 @@ class GeneralConfigForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
-        
+
     $this->config('bits_developer_tool.generalconfig')
       ->set('fisic_dir_base_controller', $form_state->getValue('fisic_dir_base_controller'))
       ->set('namespace_base_controller', $form_state->getValue('namespace_base_controller'))
@@ -240,6 +259,8 @@ class GeneralConfigForm extends ConfigFormBase {
       ->set('namespace_base_rest', $form_state->getValue('namespace_base_rest'))
       ->set('fisic_dir_logic_rest', $form_state->getValue('fisic_dir_logic_rest'))
       ->set('namespace_logic_rest', $form_state->getValue('namespace_logic_rest'))
+      ->set('exclude_module', $form_state->getValue('exclude_module'))
+      ->set('exclude_package', $form_state->getValue('exclude_package'))
       ->save();
   }
 
