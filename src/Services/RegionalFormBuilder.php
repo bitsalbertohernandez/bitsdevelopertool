@@ -16,6 +16,8 @@ class RegionalFormBuilder {
 
   private $logic_Class;
 
+  private $identificator;
+
   private $regional_extend = "FormBase";
   
   private $regional_property = "logic_instance";
@@ -67,6 +69,15 @@ class RegionalFormBuilder {
    */
   public function setFormId($form_id) {
     $this->form_id = $form_id;
+  }
+
+  /**
+   * Add Identificator Function.
+   *
+   * @param $identificator
+   */
+  public function addIdentificator($identificator) {
+    $this->identificator = $identificator;
   }
   
   /**

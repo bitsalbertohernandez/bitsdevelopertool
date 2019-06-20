@@ -4,7 +4,8 @@ namespace Drupal\bits_developer_tool\Common;
 use Symfony\Component\Yaml\Yaml;
 
 
-class Util {
+class Util
+{
 
   /**
    * Obtener el listado de módulos.

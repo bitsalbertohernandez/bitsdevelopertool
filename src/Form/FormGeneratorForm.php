@@ -91,8 +91,8 @@ class FormGeneratorForm extends GenericGeneratorForm
   private function generateIntegrationClasses(array $form, FormStateInterface $form_state) {
     $methods = [];
     $class_integration = $form_state->getValue('class_integration');
-    $module_int = $form['generator_container2']['integration']['module_integration']['#options'][$form_state->getValue('module_integration')];
-    $module_imp = $form['generator_container2']['integration_logic']['module_integration_logic']['#options'][$form_state->getValue('module_integration_logic')];
+    $module_int =$form_state->getValue('module_integration');
+    $module_imp = $form_state->getValue('module_integration_logic');
     $class_specific_logic = $form_state->getValue('class_integration_logic');
     $service_int = $form_state->getValue('service_integration');
     $form_class = $form_state->getValue('form_class');
@@ -117,7 +117,7 @@ class FormGeneratorForm extends GenericGeneratorForm
   private function generateRegionalClasses(array $form, FormStateInterface $form_state) {
     $class_regional = $form_state->getValue('class_regional');
 
-    $module = $form['module']['#options'][$form_state->getValue('module')];
+    $module = $form_state->getValue('module');
 
     $service_regional = $form_state->getValue('service_regional');
 
@@ -147,7 +147,6 @@ class FormGeneratorForm extends GenericGeneratorForm
     if ($form_class == '') {
       $form_state->setErrorByName('form_class', $this->t('Debe introducir el nombre de la clase Formulario.'));
     }
-    debug($form_state->getValue('form_class'), 'validateFormIntegrationInput', false);
     parent::validateIntegrationInput($form_state);
   }
 }
