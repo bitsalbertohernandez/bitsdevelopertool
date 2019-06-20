@@ -83,7 +83,7 @@ abstract class GenericGeneratorForm extends FormBase {
     $form[ 'generator_container' . $type]['regional'] = [
       '#type' => 'details',
       '#title' => t('Definir ' . $this->className()),
-      '#open' => true,
+      '#open' => false,
       '#states' => [
         'invisible' => [
           ':input[name="only_logic'.$type.'"]' => ['checked' => true],
@@ -124,7 +124,7 @@ abstract class GenericGeneratorForm extends FormBase {
     $form[ 'generator_container' . $type]['regional_logic'] = [
       '#type' => 'details',
       '#title' => t('Definir lógica del ' . $this->className()),
-      '#open' => true,
+      '#open' => false,
       '#states' => [
         'invisible' => [
           ':input[name="only_logic'.$type.'"]' => ['checked' => true],
@@ -158,7 +158,7 @@ abstract class GenericGeneratorForm extends FormBase {
     $form[ 'generator_container2' . $type]['integration'] = [
       '#type' => 'details',
       '#title' => t('Definir clase lógica regional del ' . $this->className()),
-      '#open' => true,
+      '#open' => false,
       '#states' => [
         'invisible' => [
           ':input[name="only_logic'.$type.'"]' => ['checked' => false],
@@ -204,7 +204,7 @@ abstract class GenericGeneratorForm extends FormBase {
     $form[ 'generator_container2' . $type]['integration_logic'] = [
       '#type' => 'details',
       '#title' => t('Definir lógica del ' . $this->className()),
-      '#open' => true,
+      '#open' => false,
       '#states' => [
         'invisible' => [
           ':input[name="only_logic'.$type.'"]' => ['checked' => false],
