@@ -30,9 +30,9 @@ class ControllerGeneratorForm extends GenericGeneratorForm
 
 
   public function submitForm(array &$form, FormStateInterface $form_state)  {
-    if ($form_state->getValue('only_logic') == 0) {
+    if ($form_state->getValue( 'only_logic' . $this->typeOfFile()) == 0) {
 
-      $module = $form_state->getValue('module');
+      $module = $form_state->getValue( 'module' . $this->typeOfFile());
 
       $class_regional = $form_state->getValue('class_regional');
 
@@ -49,7 +49,7 @@ class ControllerGeneratorForm extends GenericGeneratorForm
       $builder_controller->buildFiles();
     }
     else{
-      $module = $form_state->getValue('module_integration');
+      $module = $form_state->getValue( 'module_integration' . $this->typeOfFile());
       $logic_module = $form_state->getValue('module_integration_logic');
 
       $class = $form_state->getValue('class_integration');
