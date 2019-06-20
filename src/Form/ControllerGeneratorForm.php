@@ -29,8 +29,7 @@ class ControllerGeneratorForm extends GenericGeneratorForm
   }
 
 
-  public function submitForm(array &$form, FormStateInterface $form_state)
-  {
+  public function submitForm(array &$form, FormStateInterface $form_state)  {
     if ($form_state->getValue('only_logic') == 0) {
 
       $module = $form_state->getValue('module');
