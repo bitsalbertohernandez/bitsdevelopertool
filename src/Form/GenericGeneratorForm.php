@@ -110,10 +110,17 @@ abstract class GenericGeneratorForm extends FormBase
       '#default_value' => '',
       '#description' => t("El identificador no debe contener espacios no caracteres extraños"),
       '#required' => true,
+      '#states' => [
+        'disabled' => [
+          ':input[name="only_logic"]' => ['checked' => true],
+        ],
+      ],
       '#attributes' => [
-        'pattern' => '[a-z üÜñÑáéíóúÁÉÍÓÚ.-_A-Z0-9]+',
-        'title' => t('Por favor ingrese solo caracteres alfanuméricos y los caracteres especiales .  _  -'),
-      ]
+        'pattern' => '[0-9a-zA-Z-_.]*',
+        'oninvalid' => "this.setCustomValidity('" . t('Por favor ingrese solo caracteres alfanuméricos y los caracteres especiales _  - .') . "')",
+        'onvalid' => "this.setCustomValidity('')",
+        'onkeyup' => "this.setCustomValidity('')",
+      ],
     ];
     $form['generator_container']['regional']['class_regional'] = [
       '#type' => 'textfield',
@@ -121,9 +128,16 @@ abstract class GenericGeneratorForm extends FormBase
       '#default_value' => '',
       '#description' => t("Nombre con el que se generará la clase."),
       '#required' => true,
+      '#states' => [
+        'disabled' => [
+          ':input[name="only_logic"]' => ['checked' => true],
+        ],
+      ],
       '#attributes' => [
-        'pattern' => '[a-z üÜñÑáéíóúÁÉÍÓÚA-Z0-9]+',
-        'title' => t('Por favor ingrese solo caracteres alfanuméricos sin caracteres especiales.'),
+        'pattern' => '[0-9a-zA-Z]*',
+        'oninvalid' => "this.setCustomValidity('" . t('Por favor ingrese solo caracteres alfanuméricos') . "')",
+        'onvalid' => "this.setCustomValidity('')",
+        'onkeyup' => "this.setCustomValidity('')",
       ],
     ];
 
@@ -158,7 +172,18 @@ abstract class GenericGeneratorForm extends FormBase
       '#title' => $this->t('Nombre de la clase'),
       '#default_value' => '',
       '#description' => t("Nombre con el que se generará la clase."),
-      //'#required' => true
+      '#required' => true,
+      '#states' => [
+        'disabled' => [
+          ':input[name="only_logic"]' => ['checked' => true],
+        ],
+      ],
+      '#attributes' => [
+        'pattern' => '[0-9a-zA-Z]*',
+        'oninvalid' => "this.setCustomValidity('" . t('Por favor ingrese solo caracteres alfanuméricos') . "')",
+        'onvalid' => "this.setCustomValidity('')",
+        'onkeyup' => "this.setCustomValidity('')",
+      ],
     ];
 
     // Tablas para las integraciones
@@ -199,10 +224,17 @@ abstract class GenericGeneratorForm extends FormBase
       '#default_value' => '',
       '#description' => t("El identificador no debe contener espacios"),
       '#required' => true,
+      '#states' => [
+        'disabled' => [
+          ':input[name="only_logic"]' => ['checked' => false],
+        ],
+      ],
       '#attributes' => [
-        'pattern' => '[a-z üÜñÑáéíóúÁÉÍÓÚ-_A-Z0-9]+',
-        'title' => t('Por favor ingrese solo caracteres alfanuméricos y los caracteres especiales _  -'),
-      ]
+        'pattern' => '[0-9a-zA-Z-_.]*',
+        'oninvalid' => "this.setCustomValidity('" . t('Por favor ingrese solo caracteres alfanuméricos y los caracteres especiales _  - .') . "')",
+        'onvalid' => "this.setCustomValidity('')",
+        'onkeyup' => "this.setCustomValidity('')",
+      ],
     ];
     $form['generator_container2']['integration']['class_integration'] = [
       '#type' => 'textfield',
@@ -210,10 +242,17 @@ abstract class GenericGeneratorForm extends FormBase
       '#default_value' => '',
       '#description' => t("Nombre de la clase lógica regional."),
       '#required' => true,
+      '#states' => [
+        'disabled' => [
+          ':input[name="only_logic"]' => ['checked' => false],
+        ],
+      ],
       '#attributes' => [
-        'pattern' => '[a-z üÜñÑáéíóúÁÉÍÓÚA-Z0-9]+',
-        'title' => t('Por favor ingrese solo caracteres alfanuméricos sin caracteres especiales.'),
-      ]
+        'pattern' => '[0-9a-zA-Z]*',
+        'oninvalid' => "this.setCustomValidity('" . t('Por favor ingrese solo caracteres alfanuméricos') . "')",
+        'onvalid' => "this.setCustomValidity('')",
+        'onkeyup' => "this.setCustomValidity('')",
+      ],
     ];
 
       // Tabla de las clases lógicas de integration.
@@ -260,7 +299,18 @@ abstract class GenericGeneratorForm extends FormBase
       '#title' => $this->t('Nombre de la clase'),
       '#default_value' => '',
       '#description' => t("Nombre con el que se generará la clase."),
-      //'#required' => true
+      '#required' => true,
+      '#states' => [
+        'disabled' => [
+          ':input[name="only_logic"]' => ['checked' => false],
+        ],
+      ],
+      '#attributes' => [
+        'pattern' => '[0-9a-zA-Z]*',
+        'oninvalid' => "this.setCustomValidity('" . t('Por favor ingrese solo caracteres alfanuméricos') . "')",
+        'onvalid' => "this.setCustomValidity('')",
+        'onkeyup' => "this.setCustomValidity('')",
+      ],
     ];
 
     // Boton para generar las clases.
