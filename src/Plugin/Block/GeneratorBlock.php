@@ -31,7 +31,7 @@ class GeneratorBlock extends BlockBase{
      foreach ( $form_config_data as $key => $value) {
        array_push($form_data, [
          'title' => $value['title'],
-         'id'=>$key,
+         'id'=> $key,
          'form' => \Drupal::formBuilder()->getForm($value['path_form']),
        ]);
      }
