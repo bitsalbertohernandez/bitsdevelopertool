@@ -17,14 +17,6 @@ bits_developer_tool.general_g_form:
   requirements:
     _permission: 'access content'
 
-bits_developer_tool.generate_form:
-  path: '/generate-form'
-  defaults:
-    _form: '\Drupal\bits_developer_tool\Form\FormGeneratorForm'
-    _title: 'Generador de Formularios BITS'
-  requirements:
-    _permission: 'access content'
-
 bits_developer_tool.generator_block_form:
   path: '/generator-block-form'
   defaults:
@@ -35,10 +27,10 @@ bits_developer_tool.generator_block_form:
   options:
     _admin_route: TRUE
 
-bits_developer_tool.generator_service_form:
-  path: '/services'
+bits_developer_tool.autocomplete_module:
+  path: '/module-load-list-match/{count}'
   defaults:
-    _form: '\Drupal\bits_developer_tool\Form\ServiceGeneratorForm'
-    _title: 'Formulario para la Generación de Servicios rest'
+    _controller: 'Drupal\bits_developer_tool\Controller\AutocompleteModuleController::loadModules'
+    _format: json
   requirements:
-    _permission: 'access content'
+    _access: 'TRUE'
