@@ -1,5 +1,5 @@
 name: 'bits_developer_tool'
 type: module
-description: 'Developer tool'
+description: 'Herramientas para desarrolladores de Bits'
 core: 8.x
 package: 'Custom'
