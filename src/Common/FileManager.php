@@ -4,16 +4,14 @@ namespace Drupal\bits_developer_tool\Common;
 use Drupal\file\Entity\File;
 use Symfony\Component\Yaml\Yaml as SymfonyYaml;
 
-class FileManager
-{
+class FileManager {
 
   private $yaml;
   const PATH_PREFIX = "{modulo}";
   const ID_CONFIG = "bits_developer_tool.generalconfig";
   private $namespace_path;
 
-  public function __construct()
-  {
+  public function __construct() {
     $this->yaml = new SymfonyYaml();
     $this->namespace_path = \Drupal::service('bits_developer.namespace.path');
   }
@@ -30,8 +28,7 @@ class FileManager
    * @return boolean
    *  Retorna true si se salvó la información y false en caso contrario.
    */
-  public function saveYAMLConfig($dir, array $data = [], $type = YAMLType::INFO_FILE)
-  {
+  public function saveYAMLConfig($dir, array $data = [], $type = YAMLType::INFO_FILE) {
     $level = 2;
     $data_file = $this->getYAMLData($dir);
     foreach ($data as $key => $value) {
@@ -56,8 +53,7 @@ class FileManager
    * @return array
    *  Configuraciones que contine el fichero.
    */
-  public function getYAMLData($dir)
-  {
+  public function getYAMLData($dir) {
     $content = $this->getFileContent($dir);
     return $this->yaml->parse($content);
   }
@@ -72,8 +68,7 @@ class FileManager
    * @return boolean
    * Retorna true si existe la clave y false en caso contrario.
    */
-  public function existKeyInYAMLFile($dir, $key)
-  {
+  public function existKeyInYAMLFile($dir, $key) {
     $yaml_content = $this->getYAMLData($dir);
     $array_key = array_keys($yaml_content);
     return in_array($key, $array_key);
@@ -90,8 +85,7 @@ class FileManager
    *  Ruta del archivo.
    *
    */
-  public function getYAMLPath($module_name, $type_file)
-  {
+  public function getYAMLPath($module_name, $type_file) {
     $module_dir = $this->modulePath($module_name);
     return $module_dir . "/$module_name.$type_file";
   }
@@ -104,8 +98,7 @@ class FileManager
    * @return string
    *  Ruta del módulo
    */
-  public function modulePath($module_name)
-  {
+  public function modulePath($module_name) {
     return drupal_get_path('module', $module_name);
   }
 
@@ -122,8 +115,7 @@ class FileManager
    *  Ruta del archivo.
    *
    */
-  public function getFilePath($module_name, $file_dir)
-  {
+  public function getFilePath($module_name, $file_dir) {
     // ver como accedo a la configuracion de la ruta(Alejandro)
     $dir = $this->modulePath($module_name);
     $config_path = str_replace(FileManager::PATH_PREFIX, "", $file_dir);
@@ -139,8 +131,7 @@ class FileManager
    * @return string
    *  Contenido del archivo.
    */
-  public function getFileContent($dir)
-  {
+  public function getFileContent($dir) {
     return file_get_contents($dir);
   }
 
@@ -154,8 +145,7 @@ class FileManager
    * @return boolean
    *  Retorna true si se salvó la información y false en caso contrario.
    */
-  public function saveFile($dir_file, $data)
-  {
+  public function saveFile($dir_file, $data) {
     return (bool)file_put_contents($dir_file, $data);
   }
 
@@ -166,7 +156,7 @@ class FileManager
    *  Ruta del directorio.
    * @return void
    */
-  public function createPath($path){
+  public function createPath($path) {
    return mkdir($path, 0770, true);
   }
 
@@ -177,7 +167,7 @@ class FileManager
    *  Ruta del directorio.
    * @return void
    */
-  public function pathExist($path){
+  public function pathExist($path) {
      return file_exists($path);
   }
 

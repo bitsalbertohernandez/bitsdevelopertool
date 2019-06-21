@@ -1,5 +1,5 @@
 bits_developer_tool.general_config_form:
-  title: 'GeneralConfigForm'
+  title: 'Configurar generador de código'
   route_name: bits_developer_tool.general_config_form
   description: 'Configuración General para los Elementos del Generador de Código'
   parent: system.admin_config_system

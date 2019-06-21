@@ -16,7 +16,7 @@ function bits_developer_tool_help($route_name, RouteMatchInterface $route_match)
     case 'help.page.bits_developer_tool':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('Generation tool') . '</p>';
+      $output .= '<p>' . t('Herramientas de desarrollo Bits') . '</p>';
       return $output;
 
     default:
@@ -27,11 +27,11 @@ function bits_developer_tool_help($route_name, RouteMatchInterface $route_match)
  */
 function bits_developer_tool_theme() {
   return [
-    'bits_generate_tool' => [
+    'generator_tab' => [
       'variables' => [
-        'form' => NULL,
+        'forms' => NULL,
       ],
-      'template' => 'bits-generate-tool',
+      'template' => 'generator-tab',
     ],
   ];
 }

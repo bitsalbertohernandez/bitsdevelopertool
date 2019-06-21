@@ -1,8 +1,7 @@
 <?php
 namespace Drupal\bits_developer_tool\Common;
 
-class TypeOfFile
-{
+class TypeOfFile {
 
   const CONTROLLER = "controller";
   const CONTROLLER_LOGIC = "controller_logic";
