@@ -2,8 +2,7 @@
 
 namespace Drupal\bits_developer_tool\Common;
 
-class ClassName
-{
+class ClassName {
   const CONTROLLER = "Controlador";
   const BLOCK = "Bloque";
   const FORM = "Formulario";
