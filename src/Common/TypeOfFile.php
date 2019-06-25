@@ -13,6 +13,6 @@ class TypeOfFile {
   const BLOCK_LOGIC = "block_logic";
 
   const FORM = "form";
-  const FROM_LOGIC = "form_logic";
+  const FORM_LOGIC = "form_logic";
 
 }
