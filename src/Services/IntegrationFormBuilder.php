@@ -9,42 +9,42 @@ use Drupal\bits_developer_tool\Common\YAMLType;
 use Drupal\bits_developer_tool\Common\RegionalUse;
 
 class IntegrationFormBuilder {
-  
+
   private $form_Class;
-  
+
   private $module_int;
 
   private $module_impl;
-  
+
   private $logic_Class;
-  
+
   private $integration_extend = '';
-  
+
   private $regional_property = "logic_instance";
 
   private $form_instance = 'instance';
-  
+
   private $regional_property_comment = '@var \\';
 
   private $form_id;
 
   private $methodImpl = [];
-  
+
   /**
    * @var \Drupal\bits_developer_tool\Common\FileManager
    */
   private $file_manager;
-  
+
   /**
    * @var \Drupal\bits_developer_tool\Generators\FormGenerator
    */
   private $form_generator;
-  
+
   /**
    * @var \Drupal\bits_developer_tool\Common\NameSpacePathConfig
    */
   private $namespace_path;
-  
+
   /**
    * RegionalFormBuilder constructor.
    */
@@ -53,7 +53,7 @@ class IntegrationFormBuilder {
     $this->form_generator = \Drupal::service('bits_developer.form.generator');
     $this->namespace_path = \Drupal::service('bits_developer.namespace.path');
   }
-  
+
   /**
    * Add Class Comments to Forms
    *
@@ -64,7 +64,7 @@ class IntegrationFormBuilder {
   public function addClassComments($class_name, $id_form, $admin_label) {
     $this->form_generator->addClassCommentForm($class_name, $id_form, $admin_label);
   }
-  
+
   /**
    * Add Implements to a Class
    *
@@ -77,7 +77,7 @@ class IntegrationFormBuilder {
     $this->form_generator->addUse($this->interface);
     $this->form_generator->addImplement($namespace . "\\" . $this->interface_name);
   }
-  
+
   /**
    * Add Class Function.
    *
@@ -103,7 +103,7 @@ class IntegrationFormBuilder {
   public function setIntegrationClass($integration_class) {
     $this->integration_extend = $integration_class;
   }
-  
+
   /**
    * Add Module Function.
    *
@@ -130,14 +130,14 @@ class IntegrationFormBuilder {
   public function addLogicClass($logic_Class) {
     $this->logic_Class = $logic_Class;
   }
-  
+
   /**
    * Build Files Function.
    */
   public function buildFiles() {
     return $this->generateFormLogicClass(TypeOfFile::FORM_LOGIC);
   }
-  
+
   /**
    * Array of Construct Form Comments
    *
@@ -250,7 +250,7 @@ class IntegrationFormBuilder {
     $body = '    $this->'."$this->form_instance".' = &$'."$params;";
     return  $body;
   }
-  
+
   /**
    * Create Form Class Logic.
    *
@@ -261,7 +261,6 @@ class IntegrationFormBuilder {
     $form_generator = new FormGenerator();
     $form_generator->addNameSpace($namespace_logic);
     $namespace_form_class = str_replace(FileManager::PATH_PREFIX, $this->module_int, $this->namespace_path->getNameSpace(TypeOfFile::FORM));
-    $form_generator->addUse($namespace_form_class."\\".$this->form_Class);
 
     $namespace_extend_class = str_replace(FileManager::PATH_PREFIX, $this->module_int, $this->namespace_path->getNameSpaceLogic(TypeOfFile::FORM));
     $form_generator->addUse($namespace_extend_class."\\".$this->integration_extend);
@@ -269,11 +268,13 @@ class IntegrationFormBuilder {
     $form_generator->addUse('Drupal\Core\Form\FormStateInterface');
     $form_generator->addExtend($namespace_extend_class."\\".$this->integration_extend);
 
-    $form_comment = $this->regional_property_comment.$namespace_form_class."\\".$this->form_Class;
-    $form_generator->addClassProperty($this->form_instance, $form_comment, "", FALSE, 'protected' );
+    //TODO: Revisar si esto se mantiene para algunos formularios.
+   // $form_comment = $this->regional_property_comment.$namespace_form_class."\\".$this->form_Class;
+    //$form_generator->addClassProperty($this->form_instance, $form_comment, "", FALSE, 'protected' );
 
-    $form_generator->addMethod('createInstance',$this->generateCreateInstanceBodyFormClass('form'),$this->createInstanceComments($namespace_form_class),$this->createInstanceArguments($namespace_form_class."\\".$this->form_Class));
+//    $form_generator->addMethod('createInstance',$this->generateCreateInstanceBodyFormClass('form'),$this->createInstanceComments($namespace_form_class),$this->createInstanceArguments($namespace_form_class."\\".$this->form_Class));
     $this->generateMethodLogicClass($form_generator);
+
   }
 
   private function generateMethodLogicClass(&$form_generator) {

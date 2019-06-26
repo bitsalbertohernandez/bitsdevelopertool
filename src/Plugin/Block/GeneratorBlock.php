@@ -51,11 +51,11 @@ class GeneratorBlock extends BlockBase{
     /*  'rest'=>[
         'title' => 'Servivio Rest',
         'path_form' => \Drupal\bits_developer_tool\Form\ControllerGeneratorForm::class
-      ],
+      ],*/
       'form'=>[
         'title' => 'Formulario',
-        'path_form' => \Drupal\bits_developer_tool\Form\ControllerGeneratorForm::class
-      ],*/
+        'path_form' => \Drupal\bits_developer_tool\Form\FormGeneratorForm::class
+      ],
     ];
   }
 }

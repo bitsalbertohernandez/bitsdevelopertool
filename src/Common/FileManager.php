@@ -70,7 +70,7 @@ class FileManager {
    */
   public function existKeyInYAMLFile($dir, $key) {
     $yaml_content = $this->getYAMLData($dir);
-    $array_key = array_keys($yaml_content);
+    $array_key = array_keys($yaml_content['services']);
     return in_array($key, $array_key);
   }
 
