@@ -55,12 +55,6 @@ class FormGeneratorForm extends GenericGeneratorForm
       '#default_value' => '',
       '#description' => t("El identificador no debe contener espacios no caracteres extraños"),
     ];
-//    $form['generator_container2'. $this->typeOfFile()]['integration']['form_class'] = [
-//      '#type' => 'textfield',
-//      '#title' => $this->t('Nombre de la clase Formulario'),
-//      '#default_value' => '',
-//      '#description' => t("Clase formulario que instancia la clase logica seleccionada"),
-//    ];
     $form['generator_container2'. $this->typeOfFile()]['integration_logic']['submit_method_integration_logic'] = [
       '#type' => 'checkbox',
       '#title' => t('Function submitForm'),
@@ -95,7 +89,6 @@ class FormGeneratorForm extends GenericGeneratorForm
     $module_imp = $form_state->getValue('module_integration_logic');
     $class_specific_logic = $form_state->getValue('class_integration_logic');
     $service_int = $form_state->getValue('service_integration');
-    //$form_class = $form_state->getValue('form_class');
     if ($form_state->getValue('submit_method_integration_logic') == true)
       $methods[] = 'submitForm';
     if ($form_state->getValue('build_method_integration_logic') == true)
@@ -103,7 +96,6 @@ class FormGeneratorForm extends GenericGeneratorForm
     if ($form_state->getValue('validate_method_integration_logic') == true)
       $methods[] = 'validateForm';
     $builder_controller = \Drupal::service('bits_developer.int-form.builder');
-    //$builder_controller->addFormClass($form_class);
     $builder_controller->addLogicClass($class_specific_logic);
     $builder_controller->addModuleInt($module_int);
     $builder_controller->addModuleImpl($module_imp);
@@ -124,7 +116,6 @@ class FormGeneratorForm extends GenericGeneratorForm
     $form_id = $form_state->getValue('formId');
 
     $class_regional_logic = $form_state->getValue('class_regional_logic');
-
     $builder_controller = \Drupal::service('bits_developer.reg-form.builder');
     $builder_controller->addClass($class_regional);
     $builder_controller->setFormId($form_id);
@@ -146,10 +137,7 @@ class FormGeneratorForm extends GenericGeneratorForm
   private function validateFormIntegrationInput(array $form, FormStateInterface $form_state) {
 
     parent::validateIntegrationInput($form_state);
-//    $form_class = $form_state->getValue('form_class');
-//    if ($form_class == '') {
-//      $form_state->setErrorByName('form_class', $this->t('Debe introducir el nombre de la clase Formulario.'));
-//    }
+
     $service_int = $form_state->getValue('service_integration');
     $module_int = $form_state->getValue('module_integration');
     if ($service_int != '') {

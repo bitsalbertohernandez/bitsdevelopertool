@@ -9,9 +9,9 @@ use Drupal\bits_developer_tool\Common\YAMLType;
 use Drupal\bits_developer_tool\Common\RegionalUse;
 
 class RegionalFormBuilder {
-  
+
   private $class;
-  
+
   private $module;
 
   private $logic_Class;
@@ -19,30 +19,30 @@ class RegionalFormBuilder {
   private $identificator;
 
   private $regional_extend = "FormBase";
-  
+
   private $regional_property = "logic_instance";
 
   private $form_instance = 'instance';
-  
+
   private $regional_property_comment = '@var \\';
 
   private $form_id;
-  
+
   /**
    * @var \Drupal\bits_developer_tool\Common\FileManager
    */
   private $file_manager;
-  
+
   /**
    * @var \Drupal\bits_developer_tool\Generators\FormGenerator
    */
   private $form_generator;
-  
+
   /**
    * @var \Drupal\bits_developer_tool\Common\NameSpacePathConfig
    */
   private $namespace_path;
-  
+
   /**
    * RegionalFormBuilder constructor.
    */
@@ -52,7 +52,7 @@ class RegionalFormBuilder {
     $this->namespace_path = \Drupal::service('bits_developer.namespace.path');
   }
 
-  
+
   /**
    * Add Class Function.
    *
@@ -79,7 +79,7 @@ class RegionalFormBuilder {
   public function addIdentificator($identificator) {
     $this->identificator = $identificator;
   }
-  
+
   /**
    * Add Module Function.
    *
@@ -97,7 +97,7 @@ class RegionalFormBuilder {
   public function addLogicClass($logic_Class) {
     $this->logic_Class = $logic_Class;
   }
-  
+
   /**
    * Build Files Function.
    */
@@ -109,7 +109,7 @@ class RegionalFormBuilder {
     }
     return false;
   }
-  
+
   /**
    * Array of Construct Form Comments
    *
@@ -141,8 +141,7 @@ class RegionalFormBuilder {
    */
   private function generateConstructFormClassBody() {
     $instance = "// Store our dependency. \n" . '$this->' . $this->regional_property . ' = \\' . 'Drupal::service(\''.$this->identificator.'\');';
-   // $set_config = "\n" . '$this->'.$this->regional_property.'->createInstance($this);';
-    return $instance  /*. $set_config*/;
+    return $instance;
   }
 
   /**
@@ -257,7 +256,7 @@ class RegionalFormBuilder {
     $extra = 'return parent::'."$function(".'$'."form, ".'$'."form_state); \n";
     return $if  . $body . $extra;
   }
-  
+
   /**
    * Create Form Base Class.
    *
@@ -266,14 +265,14 @@ class RegionalFormBuilder {
    */
   private function createFormBase(&$form_generator, $namespace_logic) {
     $namespace = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::FORM));
-    
+
     $form_generator->addUse('Drupal\Core\Form\FormBase');
     $form_generator->addUse('Drupal\Core\Form\FormStateInterface');
     $form_generator->addExtend($namespace . "\\" . $this->regional_extend);
     $form_generator->addNameSpace($namespace);
     $regional_comment = $this->regional_property_comment.$namespace_logic."\\".$this->logic_Class;
     $form_generator->addClassProperty($this->regional_property, $regional_comment, "", FALSE, 'protected');
-    
+
     // Constructor code.
     $bodyContruct = $this->generateConstructFormClassBody();
     $form_generator->addMethod(
@@ -292,7 +291,7 @@ class RegionalFormBuilder {
     $validateFormArgument = $this->functionArguments('validateForm');
     $form_generator->addMethod('validateForm', $this->generateFunctionFormClassBody('validateForm'), $this->functionsFormClassComments('validateForm', $validateFormArgument), $validateFormArgument);
   }
-  
+
   /**
    * Create Form Class Logic.
    *
@@ -309,8 +308,6 @@ class RegionalFormBuilder {
     $form_comment = $this->regional_property_comment.$namespace."\\".$this->class;
     $form_generator->addClassProperty($this->form_instance, $form_comment, "", FALSE, 'protected');
 
-//    $form_generator->addMethod('createInstance',$this->generateCreateInstanceBodyFormClass('form'),$this->createInstanceComments($namespace),$this->createInstanceArguments($namespace."\\".$this->class));
-
     $form_generator->addMethod('getFormId',$this->generateGetFormIdBodyLogicClass(),$this->getFormIdComments(),[]);
 
     $buildFormArguments = $this->functionArguments('buildForm');
@@ -323,7 +320,7 @@ class RegionalFormBuilder {
     $form_generator->addMethod('validateForm', "", $this->functionsFormClassComments('validateForm' ,$validateFormArguments), $validateFormArguments);
 
   }
-  
+
   /**
    * Generate Path And Code in Base Class.
    *
@@ -359,7 +356,7 @@ class RegionalFormBuilder {
     $dir_file = $path . '/' . $class . '.php';
     return ['code' => $code, 'dir_file' => $dir_file];
   }
-  
+
   /**
    * Generate Form Class Function.
    *
@@ -403,13 +400,13 @@ class RegionalFormBuilder {
     $dir_file = $path_code['dir_file'];
     return $this->file_manager->saveFile($dir_file, "<?php \n \n" . $code);
   }
-  
+
   private function generateYAMLConfig() {
     $class = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpaceLogic(TypeOfFile::FORM)) . '\\' . $this->logic_Class;
     $data[$this->identificator]['class'] = $class;
     $data[$this->identificator]['arguments'] = [];
     $yaml_dir = $this->file_manager->getYAMLPath($this->module, YAMLType::SERVICES_FILE);
     return $this->file_manager->saveYAMLConfig($yaml_dir, $data, YAMLType::SERVICES_FILE);
-    
+
   }
 }
