@@ -170,4 +170,24 @@ class FileManager {
   public function pathExist($path) {
      return file_exists($path);
   }
+/**
+ * Defuelve el nombre de la clase service provider de un módulo.
+ *
+ * @param string $module
+ * @return void
+ */
+  public function getServiceProviderClassName($module) {
+    $class = "";
+    if(strpos('-', $module) === FALSE) {
+       $module = explode('-', $module);
+    } elseif(strpos('_', $module) === FALSE) {
+      $module = explode('-', $module);
+    } else{
+      $module = [$module];
+    }
+    foreach ( $module as $value) {
+     $class .= ucfirst($value);
+    }
+    return str_word_count($class)>0 ? $class."ServiceProvider" : $class;
+  }
 }
