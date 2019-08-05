@@ -8,7 +8,7 @@ use Drupal\bits_developer_tool\Common\TypeOfFile;
 use Drupal\bits_developer_tool\Common\YAMLType;
 use Drupal\bits_developer_tool\Services\ParentBlockBuilder;
 
-class RegionalBlockBuilder extends ParentBlockBuilder {
+class IntegrationBlockBuilder extends ParentBlockBuilder {
 
   /**
    * Add Class Comments to Blocks
@@ -53,26 +53,6 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
   }
 
   /**
-   * Array of Create Methods Block Comments
-   *
-   * @return array
-   */
-  public function createComments() {
-    $namespace = str_replace(FileManager::PATH_PREFIX, $this->module, $this->namespace_path->getNameSpace(TypeOfFile::BLOCK));
-    $this->block_generator->addUse($this->container_interface);
-    $container = $this->container_interface . ' $container';
-    return [
-      "Create Block Class. \n",
-      "@param $namespace\\$this->container_name \n Block container.",
-      "@param array $this->configuration_prop \n Block configuration.",
-      "@param string $this->plugin_id_prop \n Plugin identification.",
-      "@param mixed $this->plugin_definition_prop \n Plugin definition.",
-      "\n\n@return static",
-    ];
-  }
-
-
-  /**
    * Array of Set Config Methods Comments
    *
    * @return array
@@ -86,29 +66,6 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
       "@param $$this->logic_config_property",
       "\n@return void",
     ];
-  }
-
-  /**
-   * Generate Body of Contruct Block Base Class.
-   *
-   * @return string
-   */
-  public function generateContructBlockBaseClassBody() {
-    $instance = "// Store our dependency. \n" . '$this->' . $this->regional_property . ' = $' . $this->regional_property;
-    $parent = "\n\n// Call parent construct method. \n" . 'parent::__construct(' . $this->configuration_prop . ', ' . $this->plugin_id_prop . ', ' . $this->plugin_definition_prop . ');';
-    $set_config = "\n\n// Set init config. \n" . '$this->configurationInstance->setConfig($this, $this->configuration);';
-    return $instance . $parent . $set_config;
-  }
-
-  /**
-   * Genetate Body of Create Method Block Base Class.
-   *
-   * @return string
-   */
-  public function generateCreateBlockBaseClassBody() {
-    $ident = "'$this->identificator'";
-    $containter = '$container->get(' . $ident . ')';
-    return "return new static(\n  $this->configuration_prop,\n  $this->plugin_id_prop,\n  $this->plugin_definition_prop,\n  $containter\n);";
   }
 
   /**
@@ -176,74 +133,6 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
     return $instance . $config;
   }
 
-
-  /**
-   * Generate Body of default configuration method.
-   *
-   * @return string
-   */
-  public function getBodyDefaultConfiguration() {
-    $body = 'if (method_exists($this->' . $this->regional_property . ', "defaultConfiguration")) {'
-      . "\n" . '   return $this->' . $this->regional_property . '->defaultConfiguration();'
-      . "\n}\n" . 'return parent::defaultConfiguration();';
-
-    return $body;
-  }
-
-  /**
-   * Generate Body of block Access Method Base.
-   *
-   * @return string
-   */
-  public function getBodyBlockAccessBaseClass() {
-    $body = 'if (method_exists($this->' . $this->regional_property . ', "blockAccess")) {'
-      . "\n" . '   return $this->' . $this->regional_property . '->blockAccess($account);'
-      . "\n}\n" . 'return parent::blockAccess($account);';
-
-    return $body;
-  }
-
-  /**
-   * Generate Body of Block Form Method Base.
-   *
-   * @return string
-   */
-  public function getBodyBlockBaseClass($type) {
-    $body = 'if (method_exists($this->' . $this->regional_property . ', "block' . $type . '")) {'
-      . "\n" . '   return $this->' . $this->regional_property . '->block' . $type . '($form, $form_state);'
-      . "\n}\n" . 'return parent::block' . $type . '($form, $form_state);';
-
-    return $body;
-  }
-
-  /**
-   * Generate Body of Block Form Method Base.
-   *
-   * @return string
-   */
-  public function getBodyBlockBaseClassWithConfig($type) {
-    $body = 'if (method_exists($this->' . $this->regional_property . ', "block' . $type . '")) {'
-      . "\n" . '   return $this->' . $this->regional_property . '->block' . $type . '($form, $form_state, $this->' . $this->configuration_prop . ');'
-      . "\n}\n" . 'return parent::block' . $type . '($form, $form_state);';
-
-    return $body;
-  }
-
-
-  /**
-   * Generate Body of Build Block Method Base.
-   *
-   * @return string
-   */
-  public function getBodyBuildMethodBase() {
-    $body = 'if (method_exists($this->' . $this->regional_property . ', "build")) {'
-      . "\n" . '   return $this->' . $this->regional_property . '->build($this, $this->' . $this->configuration_prop . ');'
-      . "\n}\n" . 'return parent::build($this, $this->' . $this->configuration_prop . ');';
-
-    return $body;
-  }
-
-
   /**
    * Generate Path And Code in Base And Logic Class.
    *
@@ -277,10 +166,8 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
    * Build Files Function.
    */
   public function buildFiles() {
-    if ($this->generateBlockClass(TypeOfFile::BLOCK)) {
       $this->generateYAMLConfig();
       $this->generateBlockClass(TypeOfFile::BLOCK_LOGIC);
-    }
   }
 
 }

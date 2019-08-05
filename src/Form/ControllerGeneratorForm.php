@@ -25,7 +25,7 @@ class ControllerGeneratorForm extends GenericGeneratorForm {
 
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildForm($form, $form_state);
-    unset($form['generator_container2']['integration']['service_integration']);
+    unset($form['generator_container2'.$this->typeOfFile()]['integration']['service_integration']);
     return $form;
   }
 
