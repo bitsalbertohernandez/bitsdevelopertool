@@ -31,7 +31,7 @@ class ServiceGeneratorForm extends GenericGeneratorForm
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildForm($form, $form_state);
     $type = $this->typeOfFile();
-
+/*
     $form[ 'generator_container' . $type]['regional']['service_regional'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Identificador del servicio'),
@@ -46,21 +46,21 @@ class ServiceGeneratorForm extends GenericGeneratorForm
       '#default_value' => 'DefaultRestResource',
       '#description' => t("Nombre con el que se generará la clase correspondiente al servicio rest."),
       '#required' => true
-    ];
+    ];*/
 
     $form[ 'generator_container' . $type]['regional']['label'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Etiqueta del servicio rest'),
       '#default_value' => 'Default',
       '#description' => t("Etiqueta(Label) del servicio rest."),
-      '#required' => true
+      //'#required' => true
     ];
     $form[ 'generator_container' . $type]['regional']['url'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Url del servicio rest'),
       '#default_value' => '',
       '#description' => t("Url de acceso al servicio rest"). "\n Ejemplo: /amount \n /amount/{number}",
-      '#required' => true
+      //'#required' => true
     ];
 
     $form[ 'generator_container' . $type]['regional']['methods'] = [
@@ -88,7 +88,7 @@ class ServiceGeneratorForm extends GenericGeneratorForm
       '#title' => 'DELETE',
       '#default_value' => 0,
     ];
-
+/*
     $form[ 'generator_container' . $type]['regional_logic']['class_regional_logic'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Nombre de la clase'),
@@ -102,7 +102,7 @@ class ServiceGeneratorForm extends GenericGeneratorForm
       '#default_value' => '',
       '#description' =>t('Identificador necesario para modificar el ServiceProvider') ."\n".t("El identificador no debe contener espacios, ni caracteres extraños"),
       '#required' => true
-    ];
+    ];*/
     return $form;
   }
 

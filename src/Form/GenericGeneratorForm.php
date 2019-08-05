@@ -338,6 +338,9 @@ abstract class GenericGeneratorForm extends FormBase {
     if (str_replace(' ', '', $regional_service) != $regional_service) {
       $form_state->setErrorByName('service_regional', $this->t('El id del servicio no puede contener espacios en blanco.'));
     }
+    if ($regional_service == '') {
+      $form_state->setErrorByName('service_regional', $this->t('Debe introducir un identificador valido.'));
+    }
     if ($class_regional == '') {
       $form_state->setErrorByName('class_regional', $this->t('El nombre de la clase no puede ser vacio.'));
     }
