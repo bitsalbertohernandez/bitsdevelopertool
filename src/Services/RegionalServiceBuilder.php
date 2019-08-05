@@ -2,7 +2,6 @@
 
 namespace Drupal\bits_developer_tool\Services;
 
-use Drupal\bits_developer_tool\Generators\BlockGenerator;
 use Drupal\bits_developer_tool\Common\FileManager;
 use Drupal\bits_developer_tool\Common\TypeOfFile;
 use Drupal\bits_developer_tool\Common\YAMLType;
@@ -17,7 +16,7 @@ class RegionalServiceBuilder {
   private $label;
   private $logic_class;
   private $regional_use;
-  private $regional_extend = "ResourceBase";
+  private $regional_extend;
   private $regional_property = "currentUser";
   private $regional_property_comment = '@var \\';
   private $request_methods;
@@ -96,6 +95,14 @@ class RegionalServiceBuilder {
     $this->identificator = $identificator;
   }
 
+  /**
+   * Add Identificator Function.
+   *
+   * @param $identificator
+   */
+  public function addExtend($class) {
+    $this->regional_extend = $class;
+  }
   /**
    * Add Logic Class Function.
    *
@@ -189,7 +196,7 @@ class RegionalServiceBuilder {
     }
     else {
       $set_config = '// Actualice el parámetro api como instancia de la clase que utiliza'."\n".
-        ' para el consumo de sus endpoints.' . "\n" . '$this->api = $api;';
+        ' //para el consumo de sus endpoints.' . "\n" . '$this->api = $api;';
       return $set_config;
     }
   }
