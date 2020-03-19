@@ -166,8 +166,8 @@ class IntegrationBlockBuilder extends ParentBlockBuilder {
    * Build Files Function.
    */
   public function buildFiles() {
-      $this->generateYAMLConfig();
-      $this->generateBlockClass(TypeOfFile::BLOCK_LOGIC);
+    $this->generateYAMLConfig();
+    return $this->generateBlockClass(TypeOfFile::BLOCK_LOGIC);
   }
 
 }

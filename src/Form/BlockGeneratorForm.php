@@ -8,28 +8,35 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\bits_developer_tool\Common\ClassName;
 use Drupal\bits_developer_tool\Common\TypeOfFile;
 
-class BlockGeneratorForm extends GenericGeneratorForm {
+class BlockGeneratorForm extends GenericGeneratorForm
+{
 
   /**
    * {@inheritdoc}.
    */
-  public function getFormId() {
+  public function getFormId()
+  {
     return 'block_generator_form';
   }
 
-  public function className() {
+  public function className()
+  {
     return ClassName::BLOCK;
   }
 
-  public function typeOfFile() {
+  public function typeOfFile()
+  {
     return TypeOfFile::BLOCK;
   }
 
   /**
    * {@inheritdoc}.
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state)
+  {
     $form = parent::buildForm($form, $form_state);
+    // Boton para generar las clases.
+    $form['actions'] = "";
 
     // Adicionar campo Identificador del Bloque.
     $form['generator_container']['regional']['block_id'] = [
@@ -58,30 +65,52 @@ class BlockGeneratorForm extends GenericGeneratorForm {
         '#type' => 'details',
         '#title' => t('Generación de los métodos opcionales'),
       ];
+
+      if ($vars == 'regional_logic') {
+        $form[$key][$vars]['optional_metod']['#states'] = [
+          'invisible' => [
+            ':input[name="only_logic' . $this->typeOfFile() . '"]' => ['checked' => true],
+          ],
+        ];
+      }
+      else {
+        $form[$key][$vars]['optional_metod']['#states'] = [
+          'invisible' => [
+            ':input[name="only_logic' . $this->typeOfFile() . '"]' => ['checked' => false],
+          ],
+        ];
+      }
+
+
       $list_option_metod = [
         'defaultConfiguration' => 'Configuración por defecto',
-        'blockForm' => 'Fromulario del bloque',
+        'blockForm' => 'Formulario del bloque',
         'blockAccess' => 'Acceso al Bloque',
         'blockValidate' => 'Validar el Bloque',
         'blockSubmit' => 'Salvar el Bloque',
       ];
+
+
       foreach ($list_option_metod as $keyOption => $variable) {
         $form[$key][$vars]['optional_metod'][$keyOption] = [
           '#type' => 'checkbox',
           '#title' => t($variable),
         ];
       }
-
     }
 
-
+    $form['acciones'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Generar'),
+    ];
     return $form;
   }
 
   /**
    * Submit del bloque
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state)
+  {
 
     $generate_methods = [
       "defaultConfiguration" => $form_state->getValue('defaultConfiguration'),
@@ -95,37 +124,43 @@ class BlockGeneratorForm extends GenericGeneratorForm {
 
     $admin_label = $form_state->getValue('admin_label');
 
-    if ($form_state->getValue('only_logic') == 0) {
-        $module = $form['module']['#options'][$form_state->getValue('module')];
-        $service_regional = $form_state->getValue('service_regional');
-        $class_regional = $form_state->getValue('class_regional');
-        $class_regional_logic = $form_state->getValue('class_regional_logic');
-        $builder_controller = \Drupal::service('bits_developer.reg-block.builder');
+    if ($form_state->getValue('only_logicblock') == 0) {
+      $module = $form['moduleblock']['#value'];
+      $service_regional = $form_state->getValue('service_regional');
+      $class_regional = $form_state->getValue('class_regional');
+      $class_regional_logic = $form_state->getValue('class_regional_logic');
+      $builder_controller = \Drupal::service('bits_developer.reg-block.builder');
 
-        $builder_controller->addModule($module);
-        $builder_controller->addClassComments($class_regional, $block_id, $admin_label);
-        $builder_controller->addClass($class_regional);
-        $builder_controller->addIdentificator($service_regional);
-        $builder_controller->addLogicClass($class_regional_logic);
+      $builder_controller->addModule($module);
+      $builder_controller->addClassComments($class_regional, $block_id, $admin_label);
+      $builder_controller->addClass($class_regional);
+      $builder_controller->addIdentificator($service_regional);
+      $builder_controller->addLogicClass($class_regional_logic);
 
+    } else {
+      $logic_module = $form_state->getValue('module_integration');
+      $service_integration = $form_state->getValue('service_integration');
+      $class_integration = $form_state->getValue('class_integration');
+      $class_integration_logic = $form_state->getValue('class_integration_logic');
+      $builder_controller = \Drupal::service('bits_developer.integration-block.builder');
+
+      $builder_controller->addModule($logic_module);
+      $builder_controller->addClassComments($class_integration, $block_id, $admin_label);
+      $builder_controller->addClass($class_integration);
+      $builder_controller->addIdentificator($service_integration);
+      $builder_controller->addLogicClass($class_integration_logic);
     }
-    else{
-        $logic_module = $form['module']['#options'][$form_state->getValue('module_integration_logic')];
-        $service_integration = $form_state->getValue('service_integration');
-        $class_integration = $form_state->getValue('class_integration');
-        $class_integration_logic = $form_state->getValue('class_integration_logic');
-        $builder_controller = \Drupal::service('bits_developer.integration-block.builder');
 
-        $builder_controller->addModule($logic_module);
-        $builder_controller->addClassComments($class_integration, $block_id, $admin_label);
-        $builder_controller->addClass($class_integration);
-        $builder_controller->addIdentificator($service_integration);
-        $builder_controller->addLogicClass($class_integration_logic);
-    }
     $builder_controller->addImplementToClass();
     $builder_controller->addMethodList($generate_methods);
 
     $success = $builder_controller->buildFiles();
+
+    if ($success) {
+      drupal_set_message("El bloque y todas sus dependencias se han generado correctamente.");
+    } else {
+      drupal_set_message("Ha ocurrido un error y el bloque no se han generado correctamente.", 'error');
+    }
   }
 
 }

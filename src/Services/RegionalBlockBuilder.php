@@ -94,7 +94,7 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
    * @return string
    */
   public function generateContructBlockBaseClassBody() {
-    $instance = "// Store our dependency. \n" . '$this->' . $this->regional_property . ' = $' . $this->regional_property;
+    $instance = "// Store our dependency. \n" . '$this->' . $this->regional_property . ' = $' . $this->regional_property .';';
     $parent = "\n\n// Call parent construct method. \n" . 'parent::__construct(' . $this->configuration_prop . ', ' . $this->plugin_id_prop . ', ' . $this->plugin_definition_prop . ');';
     $set_config = "\n\n// Set init config. \n" . '$this->configurationInstance->setConfig($this, $this->configuration);';
     return $instance . $parent . $set_config;
@@ -236,9 +236,10 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
    * @return string
    */
   public function getBodyBuildMethodBase() {
+    $config_prop = str_replace("$", '', $this->configuration_prop);
     $body = 'if (method_exists($this->' . $this->regional_property . ', "build")) {'
-      . "\n" . '   return $this->' . $this->regional_property . '->build($this, $this->' . $this->configuration_prop . ');'
-      . "\n}\n" . 'return parent::build($this, $this->' . $this->configuration_prop . ');';
+      . "\n" . '   return $this->' . $this->regional_property . '->build($this, $this->' . $config_prop . ');'
+      . "\n}\n" . 'return parent::build($this, $this->' . $config_prop . ');';
 
     return $body;
   }
@@ -279,7 +280,7 @@ class RegionalBlockBuilder extends ParentBlockBuilder {
   public function buildFiles() {
     if ($this->generateBlockClass(TypeOfFile::BLOCK)) {
       $this->generateYAMLConfig();
-      $this->generateBlockClass(TypeOfFile::BLOCK_LOGIC);
+      return $this->generateBlockClass(TypeOfFile::BLOCK_LOGIC);
     }
   }
 
